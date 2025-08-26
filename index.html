@@ -154,7 +154,7 @@
       {n:"Trintellix"}, {n:"Cymbalta"}, {n:"Lyrica"}, {n:"Viibryd"}, {n:"Pristiq"},
       {n:"Olumiant"}, {n:"Otezla"}, {n:"Rinvoq"}, {n:"Xeljanz"}, {n:"Cosentyx"},
       {n:"Arexvy"}, {n:"Abrysvo"},
-      {n:"Opsumit"}, {n:"Uptravi"}, {n:"Adempas"}, {n:"Aranesp"}, {n:"Rozerem"}, {n:"Voltaren"}, {n:"Actos"}, {n:"Ticlid"}, {n:"Qvar"}, {n:"Crestor"}, {n:"Decadron"}, {n:"Tygacil"}, {n:"Geodon"}, {n:"Clasteon"}
+      {n:"Opsumit"}, {n:"Uptravi"}, {n:"Adempas"}, {n:"Aranesp"}, {n:"Rozerem"}, {n:"Voltaren"}, {n:"Actos"}, {n:"Ticlid"}, {n:"Qvar"}, {n:"Crestor"}, {n:"Decadron"}, {n:"Tygacil"}, {n:"Geodon"}, {n:"Clasteon"}, {n:"Finasteride"}, {n:"Minoxidil"}, {n:"Cialis"}, {n:"Tadalafil"}, {n:"Deursil"}, {n:"Botox"}, {n:"Bisoprololo"}
     ];
 
     // -----------------------------------------------------------------------
@@ -186,10 +186,11 @@
     function save(){ localStorage.setItem(SAVEK, JSON.stringify(state)); }
 
     function buildDeck(){
-      const poolP = POKEMON.slice();
+      const poolP = POKEMON.filter(p=>!p.n.includes(' '));
+      const poolD = DRUGS.filter(d=>!d.n.includes(' '));
       const items = [
         ...poolP.map(p=>({ name:p.n, type:'pokemon', info:`Pokémon (Gen ${p.gen})` })),
-        ...DRUGS.map(d=>({ name:d.n, type:'drug', info:`Farmaco` }))
+        ...poolD.map(d=>({ name:d.n, type:'drug', info:`Farmaco` }))
       ];
       // Shuffle (Fisher–Yates)
       for(let i=items.length-1; i>0; i--){
