@@ -42,7 +42,6 @@
     .title{ display:flex; align-items:center; gap:12px;}
     .title .logo{ width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(135deg, var(--accent), #00ffd0); box-shadow:var(--shadow); font-weight:700; color:#0a1530 }
     h1{ font-size: clamp(18px, 2.5vw, 26px); margin:0; }
-    .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
 
     .card{ background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); border:1px solid #2a2e56; border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; }
     .grid{ display:grid; grid-template-columns: 1fr; gap:16px; }
@@ -96,8 +95,7 @@
         <div class="logo">P/F</div>
         <h1>Pokémon o <span class="muted">Farmaco?</span></h1>
       </div>
-      <div class="controls">        <button id="resetBtn" class="btn">Reset punteggio</button>
-      </div>
+      
     </header>
 
     <div class="grid">
@@ -172,8 +170,7 @@
     const drugBtn = document.getElementById('drugBtn');
     const pokeBtn = document.getElementById('pokeBtn');
 
-    const resetBtn = document.getElementById('resetBtn');
-
+    
     // Lives / game state
     const MAX_WRONG = 5;
     let gameOver = false;
@@ -287,55 +284,22 @@
       const bestKeep = state.best;
       Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: bestKeep, round: 0 });
       gameOver = false;
+      // pulizia UI e bottoni
+      const choicesEl = document.querySelector('.choices');
+      if(replayBtn && choicesEl && choicesEl.contains(replayBtn)) choicesEl.removeChild(replayBtn);
       drugBtn.disabled = false; pokeBtn.disabled = false;
-      // pulizia UI
       els.result.textContent = '';
       els.hint.textContent = 'Scegli: farmaco o Pokémon?';
       // rebuild mazzo e riparti
       buildDeck();
       idx = -1;
       updateStatsUI();
-      if(replayBtn && replayBtn.parentNode) replayBtn.parentNode.removeChild(replayBtn);
       next();
     }
 
-    // (sezione esempi rimossa)
-
-    // Event wiring
+    // Event wiring (click)
     drugBtn.addEventListener('click', ()=>answer('drug'));
     pokeBtn.addEventListener('click', ()=>answer('pokemon'));
-
-    resetBtn.addEventListener('click', ()=>{
-      // Soft-confirm interno: alcune anteprime/iframe bloccano window.confirm
-      if (resetBtn.dataset.arm === '1') {
-        resetBtn.dataset.arm = '0';
-        resetBtn.textContent = 'Reset punteggio';
-        // azzera stato + storage
-        localStorage.removeItem(SAVEK);
-        Object.assign(state, {correct:0, wrong:0, streak:0, best:0, round:0});
-        save();
-        updateStatsUI();
-        els.result.textContent = '🔁 Punteggio azzerato';
-        // ricomincia con un mazzo nuovo
-        buildDeck();
-        idx = -1;
-        // riabilita gioco
-        gameOver = false;
-        drugBtn.disabled = false; pokeBtn.disabled = false;
-        const rb = document.getElementById('replayBtn'); if(rb) rb.remove();
-        next();
-      } else {
-        resetBtn.dataset.arm = '1';
-        const original = 'Reset punteggio';
-        resetBtn.textContent = 'Clicca di nuovo per confermare';
-        setTimeout(()=>{
-          if (resetBtn.dataset.arm === '1') { // timeout, annulla
-            resetBtn.dataset.arm = '0';
-            resetBtn.textContent = original;
-          }
-        }, 2000);
-      }
-    });
 
     window.addEventListener('keydown', (e)=>{
       if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
