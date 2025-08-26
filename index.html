@@ -107,8 +107,8 @@
         <div class="hint" id="hint">Scegli: farmaco o Pokémon?</div>
 
         <div class="choices">
-          <button class="btn primary" id="drugBtn">💊 Farmaco <span class="muted">(F)</span></button>
-          <button class="btn primary" id="pokeBtn">🕹️ Pokémon <span class="muted">(P)</span></button>
+          <button class="btn primary" id="drugBtn">Farmaco <span class="muted">(F)</span></button>
+          <button class="btn primary" id="pokeBtn">Pokémon <span class="muted">(P)</span></button>
         </div>
 
         <div class="result" id="result"></div>
@@ -174,6 +174,11 @@
 
     const resetBtn = document.getElementById('resetBtn');
 
+    // Lives / game state
+    const MAX_WRONG = 5;
+    let gameOver = false;
+    let replayBtn = null;
+
     let deck = [];
     let idx = -1;
     const state = { correct: 0, wrong: 0, streak: 0, best: 0, round: 0 };
@@ -230,21 +235,68 @@
     }
 
     function answer(choice){
+      if (gameOver) return;
       const cur = deck[idx];
-      const ok = cur.type===choice;
-      if(ok){
-        state.correct++; state.streak++; state.best = Math.max(state.best, state.streak);
-        els.result.innerHTML = `✅ Esatto! <b>${cur.name}</b> è ${cur.type==='drug'? 'un <b>farmaco</b>':'un <b>Pokémon</b>'}. <span class="muted">${cur.info||''}</span>`;
-        flash(choice==='drug'? drugBtn: pokeBtn, true);
-      }else{
-        state.wrong++; state.streak = 0;
-        els.result.innerHTML = `❌ No! <b>${cur.name}</b> è ${cur.type==='drug'? 'un <b>farmaco</b>':'un <b>Pokémon</b>'}. <span class="muted">${cur.info||''}</span>`;
-        flash(choice==='drug'? drugBtn: pokeBtn, false);
+      const ok = cur.type === choice;
+
+      if (ok) {
+        state.correct++;
+        state.streak++;
+        state.best = Math.max(state.best, state.streak);
+        els.result.innerHTML = `✅ Esatto! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class="muted">${cur.info||''}</span>`;
+        flash(choice==='drug' ? drugBtn : pokeBtn, true);
+        updateStatsUI();
+        setTimeout(next, 1400);
+      } else {
+        state.wrong++;
+        state.streak = 0;
+        els.result.innerHTML = `❌ No! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class="muted">${cur.info||''}</span>`;
+        flash(choice==='drug' ? drugBtn : pokeBtn, false);
+        updateStatsUI();
+        if (state.wrong >= MAX_WRONG) {
+          setTimeout(endGame, 400);
+        } else {
+          setTimeout(next, 1400);
+        }
       }
-      save(); updateStatsUI();
-      // aumenta il tempo di permanenza del messaggio risultato
-      const NEXT_DELAY_MS = 1400;
-      setTimeout(next, NEXT_DELAY_MS);
+      save();
+    }
+
+    function endGame(){
+      gameOver = true;
+      const total = state.correct + state.wrong;
+      const acc = total ? Math.round((state.correct/total)*100) : 0;
+      els.name.textContent = 'Fine!';
+      els.hint.textContent = `Hai esaurito i ${MAX_WRONG} tentativi`;
+      els.result.innerHTML = `🏁 Partita terminata.<br>Corrette: <b>${state.correct}</b> — Sbagliate: <b>${state.wrong}</b> — Accuratezza: <b>${acc}%</b>`;
+      drugBtn.disabled = true; pokeBtn.disabled = true;
+      // pulsante rigioca
+      if(!replayBtn){
+        replayBtn = document.createElement('button');
+        replayBtn.id = 'replayBtn';
+        replayBtn.className = 'btn primary';
+        replayBtn.textContent = 'Rigioca';
+        replayBtn.addEventListener('click', replay);
+      }
+      const choicesEl = document.querySelector('.choices');
+      if(choicesEl && !choicesEl.contains(replayBtn)) choicesEl.appendChild(replayBtn);
+    }
+
+    function replay(){
+      // resetta la run ma mantiene il best
+      const bestKeep = state.best;
+      Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: bestKeep, round: 0 });
+      gameOver = false;
+      drugBtn.disabled = false; pokeBtn.disabled = false;
+      // pulizia UI
+      els.result.textContent = '';
+      els.hint.textContent = 'Scegli: farmaco o Pokémon?';
+      // rebuild mazzo e riparti
+      buildDeck();
+      idx = -1;
+      updateStatsUI();
+      if(replayBtn && replayBtn.parentNode) replayBtn.parentNode.removeChild(replayBtn);
+      next();
     }
 
     // (sezione esempi rimossa)
@@ -267,6 +319,10 @@
         // ricomincia con un mazzo nuovo
         buildDeck();
         idx = -1;
+        // riabilita gioco
+        gameOver = false;
+        drugBtn.disabled = false; pokeBtn.disabled = false;
+        const rb = document.getElementById('replayBtn'); if(rb) rb.remove();
         next();
       } else {
         resetBtn.dataset.arm = '1';
@@ -283,6 +339,7 @@
 
     window.addEventListener('keydown', (e)=>{
       if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if (gameOver) return;
       const k = e.key.toLowerCase();
       if(k==='f'){ e.preventDefault(); answer('drug'); }
       else if(k==='p'){ e.preventDefault(); answer('pokemon'); }
