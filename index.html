@@ -59,6 +59,7 @@
     .btn.primary{ background:linear-gradient(135deg, var(--accent), #00ffd0); color:#061225; border:none }
     .btn.good{ background: #07281f; border-color:#0e5; color:#8ff9d8 }
     .btn.bad{ background: #2b0e15; border-color:#f55; color:#ffc7c7 }
+    .btn:disabled{ opacity:.6; cursor:not-allowed; pointer-events:none; filter:saturate(.85); }
 
     .stats{ display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:12px; justify-items:stretch; color:var(--muted); margin-top:8px }
     .stat{ background:#0b0e20; border:1px solid #2a2e56; padding:10px 12px; border-radius:10px; min-width:110px; text-align:center }
@@ -70,6 +71,7 @@
     kbd{ background:#0b0e20; border:1px solid #2a2e56; border-bottom-width:2px; padding:2px 6px; border-radius:6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; color:var(--ink)}
 
     .muted{ color:var(--muted) }
+    .hidden{ display:none !important }
   /* Responsive tweaks */
     @media (max-width: 560px){
       header{ flex-direction: column; align-items: stretch; gap:10px }
@@ -175,6 +177,7 @@
     const MAX_WRONG = 5;
     let gameOver = false;
     let replayBtn = null;
+    let inputLocked = false;
 
     let deck = [];
     let idx = -1;
@@ -211,6 +214,11 @@
       els.name.textContent = cur.name;
       els.hint.textContent = 'Farmaco o Pokémon?';
       els.result.textContent = '';
+      // sblocca input per la nuova domanda
+      if(!gameOver){
+        inputLocked = false;
+        drugBtn.disabled = false; pokeBtn.disabled = false;
+      }
     }
 
     function updateStatsUI(){
@@ -232,22 +240,26 @@
     }
 
     function answer(choice){
-      if (gameOver) return;
+      if (gameOver || inputLocked) return;
       const cur = deck[idx];
       const ok = cur.type === choice;
+
+      // blocca input durante il feedback per evitare doppio click
+      inputLocked = true;
+      drugBtn.disabled = true; pokeBtn.disabled = true;
 
       if (ok) {
         state.correct++;
         state.streak++;
         state.best = Math.max(state.best, state.streak);
-        els.result.innerHTML = `✅ Esatto! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class="muted">${cur.info||''}</span>`;
+        els.result.innerHTML = `✅ Esatto! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class=\"muted\">${cur.info||''}</span>`;
         flash(choice==='drug' ? drugBtn : pokeBtn, true);
         updateStatsUI();
         setTimeout(next, 1400);
       } else {
         state.wrong++;
         state.streak = 0;
-        els.result.innerHTML = `❌ No! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class="muted">${cur.info||''}</span>`;
+        els.result.innerHTML = `❌ No! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class=\"muted\">${cur.info||''}</span>`;
         flash(choice==='drug' ? drugBtn : pokeBtn, false);
         updateStatsUI();
         if (state.wrong >= MAX_WRONG) {
@@ -261,13 +273,15 @@
 
     function endGame(){
       gameOver = true;
+      inputLocked = true;
       const total = state.correct + state.wrong;
       const acc = total ? Math.round((state.correct/total)*100) : 0;
       els.name.textContent = 'Fine!';
       els.hint.textContent = `Hai esaurito i ${MAX_WRONG} tentativi`;
-      els.result.innerHTML = `🏁 Partita terminata.<br>Corrette: <b>${state.correct}</b> — Sbagliate: <b>${state.wrong}</b> — Accuratezza: <b>${acc}%</b>`;
+      els.result.innerHTML = `🏁 Partita terminata.<br>Corrette: <b>${state.correct}</b> — Sbagliate: <b>${state.wrong}</b> — Accuratezza: <b>${acc}%</b> — Streak max: <b>${state.best}</b>`;
       drugBtn.disabled = true; pokeBtn.disabled = true;
-      // pulsante rigioca
+      drugBtn.classList.add('hidden');
+      pokeBtn.classList.add('hidden');
       if(!replayBtn){
         replayBtn = document.createElement('button');
         replayBtn.id = 'replayBtn';
@@ -277,23 +291,30 @@
       }
       const choicesEl = document.querySelector('.choices');
       if(choicesEl && !choicesEl.contains(replayBtn)) choicesEl.appendChild(replayBtn);
+      // Nascondi lo stats box (ridondante nella schermata finale)
+      const statsEl = document.querySelector('.stats');
+      if (statsEl) statsEl.classList.add('hidden');
     }
 
     function replay(){
       // resetta la run ma mantiene il best
       const bestKeep = state.best;
-      Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: bestKeep, round: 0 });
+Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: 0, round: 0 });
       gameOver = false;
-      // pulizia UI e bottoni
+      inputLocked = false;
       const choicesEl = document.querySelector('.choices');
       if(replayBtn && choicesEl && choicesEl.contains(replayBtn)) choicesEl.removeChild(replayBtn);
       drugBtn.disabled = false; pokeBtn.disabled = false;
+      drugBtn.classList.remove('hidden');
+      pokeBtn.classList.remove('hidden');
+      // Mostra di nuovo lo stats box alla nuova partita
+      (function(){ const statsEl = document.querySelector('.stats'); if (statsEl) statsEl.classList.remove('hidden'); })();
       els.result.textContent = '';
       els.hint.textContent = 'Scegli: farmaco o Pokémon?';
-      // rebuild mazzo e riparti
       buildDeck();
       idx = -1;
       updateStatsUI();
+      save();
       next();
     }
 
@@ -303,7 +324,7 @@
 
     window.addEventListener('keydown', (e)=>{
       if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
-      if (gameOver) return;
+      if (gameOver || inputLocked) return;
       const k = e.key.toLowerCase();
       if(k==='f'){ e.preventDefault(); answer('drug'); }
       else if(k==='p'){ e.preventDefault(); answer('pokemon'); }
@@ -317,7 +338,6 @@
       apply();
       if(mq.addEventListener) mq.addEventListener('change', apply); else mq.addListener(apply);
     })();
-
     // Boot
     buildDeck();
     updateStatsUI();
