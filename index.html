@@ -159,6 +159,7 @@
         <div class="result" id="result" aria-live="polite"></div>
 
         <div class="stats">
+          <div class="stat">Punti: <b id="score">0</b></div>
           <div class="stat">Corrette: <b id="correct">0</b></div>
           <div class="stat">Sbagliate: <b id="wrong">0</b></div>
           <div class="stat">Accuratezza: <b id="acc">0%</b></div>
@@ -211,6 +212,7 @@
       name: document.getElementById('name'),
       hint: document.getElementById('hint'),
       result: document.getElementById('result'),
+      score: document.getElementById('score'),
       correct: document.getElementById('correct'),
       wrong: document.getElementById('wrong'),
       acc: document.getElementById('acc'),
@@ -235,7 +237,7 @@
 
     let deck = [];
     let idx = -1;
-    const state = { correct: 0, wrong: 0, streak: 0, best: 0, round: 0 };
+    const state = { correct: 0, wrong: 0, streak: 0, best: 0, round: 0, score: 0 };
 
     // localStorage for persistence
     const SAVEK = 'pf_stats_v1';
@@ -350,6 +352,7 @@
 
     function updateStatsUI(){
       els.round.textContent = state.round;
+      els.score.textContent = state.score;
       els.correct.textContent = state.correct;
       els.wrong.textContent = state.wrong;
       const total = state.correct + state.wrong;
@@ -424,6 +427,8 @@
         state.streak++;
         state.best = Math.max(state.best, state.streak);
         els.result.innerHTML = `✅ Esatto! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class="muted">${cur.info||''}</span>`;
+        // Punteggio: base 100, moltiplicatore per streak (max 3x)
+        { const base = 100; const mult = 1 + 0.2 * Math.min(Math.max(state.streak-1, 0), 10); const gained = Math.round(base * mult); state.score += gained; els.result.innerHTML += ` <span>+${gained} punti (x${mult.toFixed(1)})</span>`; }
         flash(choice==='drug' ? drugBtn : pokeBtn, true);
         updateStatsUI();
         setTimeout(next, 1400);
@@ -451,6 +456,7 @@
       els.name.textContent = 'Fine!';
       els.hint.textContent = `Hai esaurito i ${MAX_WRONG} tentativi`;
       els.result.innerHTML = `🧠 Partita terminata.<br>Corrette: <b>${state.correct}</b> • Sbagliate: <b>${state.wrong}</b> • Accuratezza: <b>${acc}%</b> • Streak max: <b>${state.best}</b>`;
+      els.result.innerHTML += ` �?� Punti: <b>${state.score}</b>`;
       drugBtn.disabled = true; pokeBtn.disabled = true;
       drugBtn.classList.add('hidden');
       pokeBtn.classList.add('hidden');
@@ -473,7 +479,7 @@
     function replay(){
       // resetta la run ma mantiene il best
       const bestKeep = state.best;
-      Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: bestKeep, round: 0 });
+      Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: bestKeep, round: 0, score: 0 });
       gameOver = false;
       inputLocked = false;
       clearTimer();
