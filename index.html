@@ -231,6 +231,24 @@
 
     function save(){ localStorage.setItem(SAVEK, JSON.stringify(state)); }
 
+    // Normalizza la scritta "Pokémon" ovunque compaia (corregge caratteri errati)
+    function fixCopy(){
+      const rep = (s)=> s
+        .replace(/Pok\u01F8mon/g, 'Pokémon')   // PokF8 = Ǹ
+        .replace(/Pok\?mon/g, 'Pokémon')       // rendering con ?
+        .replace(/Pok[eé]mon/g, 'Pokémon');     // Pokemon/Pokémon -> Pokémon
+      try{ document.title = rep(document.title); }catch(e){}
+      document.querySelectorAll('h1, h2, .hint, .choices, .result, .name').forEach(el=>{
+        if(!el) return; el.innerHTML = rep(el.innerHTML);
+      });
+    }
+    // Osserva cambi nel DOM per mantenere la correzione anche su contenuti dinamici
+    (function(){
+      const obs = new MutationObserver(()=>fixCopy());
+      obs.observe(document.documentElement, { childList:true, subtree:true, characterData:true });
+      fixCopy();
+    })();
+
     function buildDeck(){
       const items = [
         ...POKEMON.map(p=>({ name:p.n, type:'pokemon', info:`Pokémon (Gen ${p.gen})` })),
