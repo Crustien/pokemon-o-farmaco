@@ -75,6 +75,8 @@
     .stat b{ color:var(--ink); font-size:16px }
 
     .result{ text-align:center; margin-top:12px; min-height:26px }
+    /* Nasconde l'info ripetitiva (es. "Farmaco" o "Pokémon") nei messaggi risultato */
+    .result .muted{ display:none }
 
     .pill{ display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:6px 10px; font-size:12px; background:#0b0e20; border:1px solid #2a2e56; color:var(--muted) }
     kbd{ background:#0b0e20; border:1px solid #2a2e56; border-bottom-width:2px; padding:2px 6px; border-radius:6px; font-family: "Pokemon Classic", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; color:var(--ink)}
