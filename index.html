@@ -23,6 +23,9 @@
       --good:#25d29f;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
       --radius: 18px;
+      --gb-green: #cbe6a3;
+      --gb-green-dark: #3a5f3a;
+      --gb-border: #0c230f;
     }
     *{box-sizing:border-box}
     html,body{
@@ -48,6 +51,8 @@
     h1{ font-size: clamp(18px, 2.5vw, 26px); margin:0; }
 
     .card{ background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); border:1px solid #2a2e56; border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; }
+    .gb-window{ background:#0b1322; border-radius:12px; padding:20px; border:3px solid var(--gb-border); box-shadow:0 0 0 3px #223, inset 0 0 0 3px #223 }
+    .gb-dialog{ background: var(--gb-green); color:#061a06; border:3px solid var(--gb-border); border-radius:6px; padding:10px 12px; box-shadow: inset 0 0 0 3px #8bbf6a }
     .grid{ display:grid; grid-template-columns: 1fr; gap:16px; }
 
     .name{
@@ -56,7 +61,7 @@
       line-height:1.05; max-width:100%;
       overflow-wrap:anywhere; word-break:break-word;
     }
-    .hint{ text-align:center; color:var(--muted); font-size:14px; min-height:20px }
+    .hint{ text-align:center; color:#061a06; font-size:14px; min-height:20px; display:inline-block; background:var(--gb-green); border:3px solid var(--gb-border); border-radius:6px; padding:10px 12px; box-shadow: inset 0 0 0 3px #8bbf6a; margin:8px auto 0 }
 
     .choices{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:10px }
     .btn{ cursor:pointer; border:none; border-radius:14px; padding:16px 22px; 
@@ -69,6 +74,15 @@
     .btn.good{ background: #07281f; border-color:#0e5; color:#8ff9d8 }
     .btn.bad{ background: #2b0e15; border-color:#f55; color:#ffc7c7 }
     .btn:disabled{ opacity:.6; cursor:not-allowed; pointer-events:none; filter:saturate(.85); }
+
+    /* Bottoni stile Game Boy */
+    .pixel-btn{ border-radius:6px; border:4px solid #000; background:#e5e5e5; color:#000; box-shadow: inset -4px -4px 0 rgba(0,0,0,.15); padding:16px 28px }
+    .pixel-btn:hover{ transform:none; filter:brightness(1.02) }
+    .gb-poke{ background:#ffd54a; color:#1a1300; border-color:#000 }
+    .gb-drug{ background:#bde0ff; color:#04121f; border-color:#000 }
+    .menu .pixel-btn{ width:min(360px, 90%); font-size:18px }
+    .menu .pixel-btn .arrow{ margin-right:8px; animation: blink .8s steps(2,start) infinite }
+    @keyframes blink{ 50%{ opacity:.2 } }
 
     .stats{ display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:12px; justify-items:stretch; color:var(--muted); margin-top:8px }
     .stat{ background:#0b0e20; border:1px solid #2a2e56; padding:10px 12px; border-radius:10px; min-width:110px; text-align:center; font-size:14px; overflow-wrap:anywhere; word-break:break-word }
@@ -102,6 +116,10 @@
     /* Touch optimizations */
     .coarse .btn:hover{ transform:none }
     @media (pointer: coarse){ .btn{ padding:18px 24px } }
+    .popup{ position:fixed; inset:0; display:grid; place-items:center; background: rgba(0,0,0,.35); z-index:50 }
+    .popup .gb-dialog{ max-width: 520px }
+    .popup.ok .gb-dialog{ background:#c3f7c3; box-shadow: inset 0 0 0 3px #74d874 }
+    .popup.bad .gb-dialog{ background:#ffd1d1; box-shadow: inset 0 0 0 3px #ff8e8e }
   </style>
 </head>
 <body>
@@ -112,8 +130,20 @@
         <h1>Pokémon o <span class="muted">Farmaco?</span></h1>
       </div>
     </header>
+    
+    <!-- Start screen -->
+    <section id="startScreen" class="gb-window card">
+      <div style="display:grid; place-items:center; gap:16px; text-align:center">
+        <div class="logo" style="width:72px; height:72px"><img src="img/logo.png" alt="Logo"></div>
+        <h1 style="margin:6px 0 12px">Pokémon o <span class="muted">Farmaco?</span></h1>
+        <div class="menu" style="display:grid; gap:12px; justify-items:center">
+          <button id="startBtn" class="btn pixel-btn selected"><span class="arrow">➤</span> Inizia</button>
+          <button id="resetBtn" class="btn pixel-btn"><span class="arrow">➤</span> Azzera statistiche</button>
+        </div>
+      </div>
+    </section>
 
-    <div class="grid">
+    <div class="grid hidden" id="gameScreen">
       <section class="card main">
         <div class="pill" id="roundPill">Round <b id="roundNum">1</b></div>
         <div class="pill timer" id="timerPill" role="progressbar" aria-label="Tempo rimasto" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
@@ -123,8 +153,8 @@
         <div class="hint" id="hint">Scegli: farmaco o Pokémon?</div>
 
         <div class="choices">
-          <button class="btn primary" id="drugBtn" type="button">Farmaco</button>
-          <button class="btn primary" id="pokeBtn" type="button">Pokémon</button>
+          <button class=" btn pixel-btn gb-drug\ id=\drugBtn\ type=\button\>?? Farmaco</button>
+ <button class=\btn pixel-btn gb-poke\ id=\pokeBtn\ type=\button\>? Pok�mon</button>
         </div>
 
         <div class="result" id="result" aria-live="polite"></div>
