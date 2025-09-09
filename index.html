@@ -131,7 +131,13 @@
           <button class="btn primary" id="startBtn" type="button">Start</button>
         </div>
       </section>
-      
+      <section class="card" aria-labelledby="lbTitle">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px">
+          <h3 id="lbTitle" style="margin:0">Classifica</h3>
+          <button class="btn" id="lbRefreshBtn" type="button" title="Ricarica classifica">Aggiorna</button>
+        </div>
+        <div id="leaderboard" class="leaderboard muted">Caricamento…</div>
+      </section>
     </div>
 
     <div class="grid game hidden">
@@ -237,6 +243,81 @@
     if(saved){ Object.assign(state, saved); }
 
     function save(){ localStorage.setItem(SAVEK, JSON.stringify(state)); }
+
+    // Supabase client (leaderboard)
+    const SUPABASE_URL = 'https://xljkbcmswvonowiethst.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsamtiY21zd3Zvbm93aWV0aHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0MjY5MDcsImV4cCI6MjA3MzAwMjkwN30.bFtmJ7PDQstKciYVba4eCyqDnxicJyrX-e-vYO9QKAQ';
+    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    const NAMEK = 'pf_name_v1';
+    function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+    async function loadLeaderboard(){
+      const box = document.getElementById('leaderboard');
+      if(!box || !supabase){ return; }
+      box.classList.add('muted'); box.textContent = 'Caricamento…';
+      try{
+        const { data, error } = await supabase
+          .from('scores')
+          .select('*')
+          .order('correct', { ascending:false })
+          .order('acc', { ascending:false })
+          .order('best', { ascending:false })
+          .order('wrong', { ascending:true })
+          .order('created_at', { ascending:true })
+          .limit(10);
+        if(error) throw error;
+        if(!data || data.length===0){ box.textContent = 'Nessun punteggio ancora. Gioca una partita!'; return; }
+        box.classList.remove('muted');
+        box.innerHTML = data.map((e,i)=>
+          `<div style="display:flex; gap:8px; justify-content:space-between; padding:6px 0; border-bottom:1px solid #2a2e56">
+            <div style="min-width:28px">#${i+1}</div>
+            <div style="flex:1 1 auto; overflow-wrap:anywhere">${esc(e.name)}</div>
+            <div style="min-width:120px; text-align:right">✅ ${e.correct} / ❌ ${e.wrong}</div>
+            <div style="min-width:120px; text-align:right">${e.acc}% · max ${e.best}</div>
+          </div>`
+        ).join('');
+      }catch(err){ box.textContent = 'Errore nel caricamento classifica'; }
+    }
+    function showSubmit(){
+      if(!supabase) return;
+      let box = document.getElementById('lbSubmit');
+      if(box) return;
+      box = document.createElement('div');
+      box.id = 'lbSubmit';
+      box.style.marginTop = '12px';
+      box.style.textAlign = 'center';
+      const label = document.createElement('div');
+      label.className = 'hint';
+      label.textContent = 'Inserisci il tuo nome per la classifica:';
+      const nameIn = document.createElement('input');
+      nameIn.type = 'text'; nameIn.maxLength = 20; nameIn.placeholder = 'Nome';
+      nameIn.value = localStorage.getItem(NAMEK) || '';
+      nameIn.className = 'btn'; nameIn.style.minWidth = '180px'; nameIn.style.margin = '6px';
+      const sendBtn = document.createElement('button');
+      sendBtn.className = 'btn primary'; sendBtn.textContent = 'Invia alla classifica';
+      sendBtn.addEventListener('click', async ()=>{
+        const name = (nameIn.value||'').trim();
+        if(!name){ alert('Inserisci un nome'); nameIn.focus(); return; }
+        localStorage.setItem(NAMEK, name);
+        const total = state.correct + state.wrong;
+        const accNow = total ? Math.round((state.correct/total)*100) : 0;
+        sendBtn.disabled = true;
+        try{
+          const { error } = await supabase.from('scores').insert({
+            name, correct: state.correct, wrong: state.wrong, best: state.best, acc: accNow, rounds: state.round
+          });
+          if(error) throw error;
+          label.textContent = 'Punteggio inviato!';
+          nameIn.disabled = true;
+          await loadLeaderboard();
+        }catch(err){
+          sendBtn.disabled = false;
+          alert('Errore invio punteggio');
+        }
+      });
+      box.appendChild(label); box.appendChild(nameIn); box.appendChild(sendBtn);
+      const parent = els.result.parentElement;
+      if(parent){ parent.insertBefore(box, els.result.nextSibling); }
+    }
 
     function buildDeck(){
       const items = [
@@ -373,6 +454,7 @@
       drugBtn.disabled = true; pokeBtn.disabled = true;
       drugBtn.classList.add('hidden');
       pokeBtn.classList.add('hidden');
+      showSubmit();
       if(!replayBtn){
         replayBtn = document.createElement('button');
         replayBtn.id = 'replayBtn';
@@ -397,6 +479,8 @@
       clearTimer();
       const choicesEl = document.querySelector('.choices');
       if(replayBtn && choicesEl && choicesEl.contains(replayBtn)) choicesEl.removeChild(replayBtn);
+      // Rimuovi eventuale box submit
+      (function(){ const s = document.getElementById('lbSubmit'); if(s && s.parentElement) s.parentElement.removeChild(s); })();
       drugBtn.disabled = false; pokeBtn.disabled = false;
       drugBtn.classList.remove('hidden');
       pokeBtn.classList.remove('hidden');
@@ -427,6 +511,7 @@
       next();
     }
     if(startBtn) startBtn.addEventListener('click', startGame);
+    (function(){ const r = document.getElementById('lbRefreshBtn'); if(r) r.addEventListener('click', loadLeaderboard); loadLeaderboard(); })();
 
     // Full reset button: clears storage and reloads
     (function(){
