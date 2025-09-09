@@ -19,15 +19,12 @@
     }
     *{box-sizing:border-box}
     html,body{
-      margin:0; 
+      margin:0;
       font: 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial;
-      color:var(--ink); 
+      color:var(--ink);
       background: radial-gradient(1200px 600px at 20% -10%, #203, transparent 60%), radial-gradient(900px 600px at 100% 0%, #032, transparent 60%), var(--bg);
-      display:flex; align-items:center; justify-content:center; 
-<<<<<<< HEAD
+      display:flex; align-items:center; justify-content:center;
       /* padding responsivo + safe areas (iOS notch) */
-=======
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
       --pad: clamp(16px, 2.5vw, 28px);
       padding: var(--pad);
       padding-left: calc(var(--pad) + env(safe-area-inset-left));
@@ -35,14 +32,7 @@
       padding-top: calc(var(--pad) + env(safe-area-inset-top));
       padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom));
     }
-<<<<<<< HEAD
-    body{
-      margin:0; font: 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial;
-      color:var(--ink); background: radial-gradient(1200px 600px at 20% -10%, #203, transparent 60%), radial-gradient(900px 600px at 100% 0%, #032, transparent 60%), var(--bg);
-      display:flex; align-items:center; justify-content:center; padding:28px; 
-    }
-=======
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
+
     .app{ width: min(900px, 100%); }
     header{ display:flex; gap:16px; align-items:center; justify-content:space-between; margin-bottom:18px; }
     .title{ display:flex; align-items:center; gap:12px;}
@@ -54,9 +44,9 @@
 
     .name{
       text-align:center; font-weight:800; letter-spacing:.3px;
-      font-size: clamp(34px, 6vw, 64px); margin:8px 0 4px; 
+      font-size: clamp(34px, 6vw, 64px); margin:8px 0 4px;
     }
-    .hint{ text-align:center; color:var(--muted); font-size:14px; height:20px }
+    .hint{ text-align:center; color:var(--muted); font-size:14px; min-height:20px }
 
     .choices{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:10px }
     .btn{ cursor:pointer; border:none; border-radius:14px; padding:16px 22px; font-weight:700; letter-spacing:.3px; background:#11142b; color:var(--ink); border:1px solid #2a2e56; transition: transform .05s ease; }
@@ -78,16 +68,10 @@
 
     .muted{ color:var(--muted) }
     .hidden{ display:none !important }
-<<<<<<< HEAD
-  /* Responsive tweaks */
-    @media (max-width: 560px){
-      header{ flex-direction: column; align-items: stretch; gap:10px }
-      .controls{ justify-content:center }
-=======
 
+    /* Responsive tweaks */
     @media (max-width: 560px){
       header{ flex-direction: column; align-items: stretch; gap:10px }
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
       .choices{ flex-direction: column }
       .choices .btn{ width:100%; font-size:1rem; padding:16px 20px }
       .title .logo{ width:36px; height:36px }
@@ -95,14 +79,12 @@
       .name{ font-size: clamp(28px, 9vw, 44px) }
       .stat{ min-width: 0 }
     }
-<<<<<<< HEAD
+
     @media (min-width: 1100px){ .app{ width: min(1000px, 100%) } }
     /* Touch optimizations */
     .coarse .choices .muted{ display:none }
     .coarse .btn:hover{ transform:none }
     @media (pointer: coarse){ .btn{ padding:18px 24px } }
-=======
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
   </style>
 </head>
 <body>
@@ -112,10 +94,6 @@
         <div class="logo">P/F</div>
         <h1>Pokémon o <span class="muted">Farmaco?</span></h1>
       </div>
-<<<<<<< HEAD
-      
-=======
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
     </header>
 
     <div class="grid">
@@ -125,11 +103,11 @@
         <div class="hint" id="hint">Scegli: farmaco o Pokémon?</div>
 
         <div class="choices">
-          <button class="btn primary" id="drugBtn">Farmaco <span class="muted">(F)</span></button>
-          <button class="btn primary" id="pokeBtn">Pokémon <span class="muted">(P)</span></button>
+          <button class="btn primary" id="drugBtn" type="button">Farmaco <span class="muted">(F)</span></button>
+          <button class="btn primary" id="pokeBtn" type="button">Pokémon <span class="muted">(P)</span></button>
         </div>
 
-        <div class="result" id="result"></div>
+        <div class="result" id="result" aria-live="polite"></div>
 
         <div class="stats">
           <div class="stat">Corrette: <b id="correct">0</b></div>
@@ -142,15 +120,7 @@
   </div>
 
   <script>
-<<<<<<< HEAD
-    // --- Dataset ------------------------------------------------------------
-    // Pokémon (Gen 3–9, molti che "suonano" da farmaco)
-    const POKEMON = [
-      // Gen 3
-      {n:"Illumise", gen:3}, {n:"Manectric", gen:3},
-      // Gen 4
-      {n:"Gliscor", gen:4}, {n:"Roserade", gen:4},
-=======
+    // Dataset Pokémon (Gen 1-9)
     const POKEMON = [
       // Gen 1
       {n:"Marowak", gen:1}, {n:"Vaporeon", gen:1}, {n:"Vulpix", gen:1}, {n:"Flareon", gen:1},
@@ -160,7 +130,6 @@
       {n:"Illumise", gen:3}, {n:"Manectric", gen:3}, {n:"Vibrava", gen:3}, {n:"Milotic", gen:3}, {n:"Altaria", gen:3}, {n:"Numel", gen:3}, {n:"Rayquaza", gen:3}, {n:"Absol", gen:3}, {n:"Nincada", gen:3}, {n:"Metang", gen:3}, {n:"Azurill", gen:3}, {n:"Groudon", gen:3},
       // Gen 4
       {n:"Gliscor", gen:4}, {n:"Roserade", gen:4}, {n:"Glaceon", gen:4}, {n:"Heatran", gen:4},
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
       // Gen 5
       {n:"Hydreigon", gen:5}, {n:"Reuniclus", gen:5}, {n:"Cofagrigus", gen:5}, {n:"Conkeldurr", gen:5}, {n:"Chandelure", gen:5}, {n:"Excadrill", gen:5}, {n:"Zoroark", gen:5}, {n:"Virizion", gen:5}, {n:"Terrakion", gen:5}, {n:"Cobalion", gen:5}, {n:"Keldeo", gen:5}, {n:"Meloetta", gen:5}, {n:"Genesect", gen:5},
       // Gen 6
@@ -173,10 +142,7 @@
       {n:"Koraidon", gen:9}, {n:"Miraidon", gen:9}, {n:"Clodsire", gen:9}, {n:"Gholdengo", gen:9}, {n:"Flutter Mane", gen:9}, {n:"Iron Bundle", gen:9}, {n:"Iron Valiant", gen:9}, {n:"Roaring Moon", gen:9}, {n:"Ting-Lu", gen:9}, {n:"Chien-Pao", gen:9}, {n:"Chi-Yu", gen:9}, {n:"Wo-Chien", gen:9}, {n:"Kingambit", gen:9}, {n:"Tinkaton", gen:9}, {n:"Baxcalibur", gen:9}, {n:"Palafin", gen:9}, {n:"Orthworm", gen:9}, {n:"Lokix", gen:9}, {n:"Bombirdier", gen:9}, {n:"Tatsugiri", gen:9}, {n:"Veluza", gen:9}, {n:"Revavroom", gen:9}, {n:"Dachsbun", gen:9}, {n:"Grafaiai", gen:9}, {n:"Ceruledge", gen:9}, {n:"Armarouge", gen:9}, {n:"Glimmora", gen:9}, {n:"Ogerpon", gen:9}, {n:"Okidogi", gen:9}, {n:"Munkidori", gen:9}, {n:"Fezandipiti", gen:9}, {n:"Terapagos", gen:9}, {n:"Pecharunt", gen:9}
     ];
 
-<<<<<<< HEAD
-    // Farmaci (prevalentemente nomi commerciali/brand, mix recenti e noti)
-=======
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
+    // Farmaci (nomi commerciali, deduplicati)
     const DRUGS = [
       {n:"Ozempic"}, {n:"Wegovy"}, {n:"Rybelsus"}, {n:"Mounjaro"}, {n:"Zepbound"}, {n:"Trulicity"}, {n:"Januvia"}, {n:"Jardiance"}, {n:"Farxiga"},
       {n:"Humira"}, {n:"Enbrel"}, {n:"Remicade"}, {n:"Stelara"}, {n:"Cosentyx"}, {n:"Skyrizi"}, {n:"Taltz"}, {n:"Dupixent"}, {n:"Xolair"},
@@ -185,20 +151,13 @@
       {n:"Veklury"}, {n:"Paxlovid"}, {n:"Tamiflu"}, {n:"Lagevrio"},
       {n:"Aimovig"}, {n:"Ajovy"}, {n:"Emgality"}, {n:"Nurtec"}, {n:"Ubrelvy"}, {n:"Qulipta"},
       {n:"Trintellix"}, {n:"Cymbalta"}, {n:"Lyrica"}, {n:"Viibryd"}, {n:"Pristiq"},
-      {n:"Olumiant"}, {n:"Otezla"}, {n:"Rinvoq"}, {n:"Xeljanz"}, {n:"Cosentyx"},
+      {n:"Olumiant"}, {n:"Otezla"}, {n:"Rinvoq"}, {n:"Xeljanz"},
       {n:"Arexvy"}, {n:"Abrysvo"},
-<<<<<<< HEAD
-      {n:"Opsumit"}, {n:"Uptravi"}, {n:"Adempas"}, {n:"Aranesp"}, {n:"Rozerem"}, {n:"Voltaren"}, {n:"Actos"}, {n:"Ticlid"}, {n:"Qvar"}, {n:"Crestor"}, {n:"Decadron"}, {n:"Tygacil"}, {n:"Geodon"}, {n:"Clasteon"}, {n:"Finasteride"}, {n:"Minoxidil"}, {n:"Cialis"}, {n:"Tadalafil"}, {n:"Deursil"}, {n:"Botox"}, {n:"Bisoprololo"}
-    ];
-
-    // -----------------------------------------------------------------------
-=======
       {n:"Opsumit"}, {n:"Uptravi"}, {n:"Adempas"}, {n:"Aranesp"}, {n:"Rozerem"}, {n:"Voltaren"}, {n:"Actos"}, {n:"Ticlid"}, {n:"Qvar"}, {n:"Crestor"}, {n:"Decadron"}, {n:"Tygacil"}, {n:"Geodon"}, {n:"Clasteon"}, {n:"Finasteride"}, {n:"Minoxidil"}, {n:"Cialis"}, {n:"Tadalafil"}, {n:"Deursil"}, {n:"Botox"}, {n:"Bisoprololo"},
       // Aggiunte dalla foto
       {n:"Luxiq"}, {n:"Banzel"}, {n:"Xigris"}, {n:"Carnitor"}, {n:"Aceon"}, {n:"Jalyn"}, {n:"Navane"}, {n:"Fuzeon"}, {n:"Rescriptor"}
     ];
 
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
     const els = {
       name: document.getElementById('name'),
       hint: document.getElementById('hint'),
@@ -208,21 +167,12 @@
       acc: document.getElementById('acc'),
       streak: document.getElementById('streak'),
       best: document.getElementById('best'),
-<<<<<<< HEAD
-      round: document.getElementById('roundNum'),    };
-=======
       round: document.getElementById('roundNum'),
     };
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
 
     const drugBtn = document.getElementById('drugBtn');
     const pokeBtn = document.getElementById('pokeBtn');
 
-<<<<<<< HEAD
-    
-    // Lives / game state
-=======
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
     const MAX_WRONG = 5;
     let gameOver = false;
     let replayBtn = null;
@@ -232,10 +182,7 @@
     let idx = -1;
     const state = { correct: 0, wrong: 0, streak: 0, best: 0, round: 0 };
 
-<<<<<<< HEAD
     // localStorage for persistence
-=======
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
     const SAVEK = 'pf_stats_v1';
     const saved = JSON.parse(localStorage.getItem(SAVEK) || 'null');
     if(saved){ Object.assign(state, saved); }
@@ -243,20 +190,11 @@
     function save(){ localStorage.setItem(SAVEK, JSON.stringify(state)); }
 
     function buildDeck(){
-<<<<<<< HEAD
-      const poolP = POKEMON.filter(p=>!p.n.includes(' '));
-      const poolD = DRUGS.filter(d=>!d.n.includes(' '));
-      const items = [
-        ...poolP.map(p=>({ name:p.n, type:'pokemon', info:`Pokémon (Gen ${p.gen})` })),
-        ...poolD.map(d=>({ name:d.n, type:'drug', info:`Farmaco` }))
-      ];
-      // Shuffle (Fisher–Yates)
-=======
       const items = [
         ...POKEMON.map(p=>({ name:p.n, type:'pokemon', info:`Pokémon (Gen ${p.gen})` })),
         ...DRUGS.map(d=>({ name:d.n, type:'drug', info:`Farmaco` }))
       ];
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
+      // Shuffle (Fisher–Yates)
       for(let i=items.length-1; i>0; i--){
         const j = Math.floor(Math.random()* (i+1));
         [items[i], items[j]] = [items[j], items[i]];
@@ -273,10 +211,6 @@
       els.name.textContent = cur.name;
       els.hint.textContent = 'Farmaco o Pokémon?';
       els.result.textContent = '';
-<<<<<<< HEAD
-      // sblocca input per la nuova domanda
-=======
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
       if(!gameOver){
         inputLocked = false;
         drugBtn.disabled = false; pokeBtn.disabled = false;
@@ -296,11 +230,7 @@
 
     function flash(btn, ok){
       btn.classList.remove('good','bad');
-<<<<<<< HEAD
       void btn.offsetWidth; // reflow
-=======
-      void btn.offsetWidth;
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
       btn.classList.add(ok? 'good':'bad');
       setTimeout(()=>btn.classList.remove('good','bad'), 300);
     }
@@ -310,10 +240,7 @@
       const cur = deck[idx];
       const ok = cur.type === choice;
 
-<<<<<<< HEAD
       // blocca input durante il feedback per evitare doppio click
-=======
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
       inputLocked = true;
       drugBtn.disabled = true; pokeBtn.disabled = true;
 
@@ -321,14 +248,14 @@
         state.correct++;
         state.streak++;
         state.best = Math.max(state.best, state.streak);
-        els.result.innerHTML = `✅ Esatto! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class=\"muted\">${cur.info||''}</span>`;
+        els.result.innerHTML = `✅ Esatto! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class="muted">${cur.info||''}</span>`;
         flash(choice==='drug' ? drugBtn : pokeBtn, true);
         updateStatsUI();
         setTimeout(next, 1400);
       } else {
         state.wrong++;
         state.streak = 0;
-        els.result.innerHTML = `❌ No! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class=\"muted\">${cur.info||''}</span>`;
+        els.result.innerHTML = `❌ No! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class="muted">${cur.info||''}</span>`;
         flash(choice==='drug' ? drugBtn : pokeBtn, false);
         updateStatsUI();
         if (state.wrong >= MAX_WRONG) {
@@ -337,7 +264,6 @@
           setTimeout(next, 1400);
         }
       }
-<<<<<<< HEAD
       save();
     }
 
@@ -348,7 +274,7 @@
       const acc = total ? Math.round((state.correct/total)*100) : 0;
       els.name.textContent = 'Fine!';
       els.hint.textContent = `Hai esaurito i ${MAX_WRONG} tentativi`;
-      els.result.innerHTML = `🏁 Partita terminata.<br>Corrette: <b>${state.correct}</b> — Sbagliate: <b>${state.wrong}</b> — Accuratezza: <b>${acc}%</b> — Streak max: <b>${state.best}</b>`;
+      els.result.innerHTML = `🧠 Partita terminata.<br>Corrette: <b>${state.correct}</b> • Sbagliate: <b>${state.wrong}</b> • Accuratezza: <b>${acc}%</b> • Streak max: <b>${state.best}</b>`;
       drugBtn.disabled = true; pokeBtn.disabled = true;
       drugBtn.classList.add('hidden');
       pokeBtn.classList.add('hidden');
@@ -356,6 +282,7 @@
         replayBtn = document.createElement('button');
         replayBtn.id = 'replayBtn';
         replayBtn.className = 'btn primary';
+        replayBtn.type = 'button';
         replayBtn.textContent = 'Rigioca';
         replayBtn.addEventListener('click', replay);
       }
@@ -369,7 +296,7 @@
     function replay(){
       // resetta la run ma mantiene il best
       const bestKeep = state.best;
-Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: 0, round: 0 });
+      Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: bestKeep, round: 0 });
       gameOver = false;
       inputLocked = false;
       const choicesEl = document.querySelector('.choices');
@@ -415,6 +342,4 @@ Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: 0, round: 0 });
   </script>
 </body>
 </html>
-=======
-      save
->>>>>>> 018d7c6 (aggiunta index.html con gioco Pokemon o Farmaco)
+
