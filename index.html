@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>PokÃƒÂ©mon o Farmaco?</title>
+  <title>PokÃ©mon o Farmaco?</title>
   <style>
     @font-face{
       font-family: "Pokemon Classic";
@@ -127,7 +127,7 @@
     <header>
       <div class="title">
         <div class="logo"><img src="img/logo.png" alt="Logo"></div>
-        <h1>PokÃƒÂ©mon o <span class="muted">Farmaco?</span></h1>
+        <h1>PokÃ©mon o <span class="muted">Farmaco?</span></h1>
       </div>
     </header>
     
@@ -135,10 +135,10 @@
     <section id="startScreen" class="gb-window card">
       <div style="display:grid; place-items:center; gap:16px; text-align:center">
         <div class="logo" style="width:72px; height:72px"><img src="img/logo.png" alt="Logo"></div>
-        <h1 style="margin:6px 0 12px">PokÃƒÂ©mon o <span class="muted">Farmaco?</span></h1>
+        <h1 style="margin:6px 0 12px">PokÃ©mon o <span class="muted">Farmaco?</span></h1>
         <div class="menu" style="display:grid; gap:12px; justify-items:center">
-          <button id="startBtn" class="btn pixel-btn selected"><span class="arrow">Ã¢Å¾Â¤</span> Inizia</button>
-          <button id="resetBtn" class="btn pixel-btn"><span class="arrow">Ã¢Å¾Â¤</span> Azzera statistiche</button>
+          <button id="startBtn" class="btn pixel-btn selected"><span class="arrow">âž¤</span> Inizia</button>
+          <button id="resetBtn" class="btn pixel-btn"><span class="arrow">âž¤</span> Azzera statistiche</button>
         </div>
       </div>
     </section>
@@ -149,12 +149,12 @@
         <div class="pill timer" id="timerPill" role="progressbar" aria-label="Tempo rimasto" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
           <div class="bar"><div class="fill" id="timerBar" style="width:100%"></div></div>
         </div>
-        <div class="name" id="name">Ã¢â‚¬â€</div>
-        <div class="hint" id="hint">Scegli: farmaco o PokÃƒÂ©mon?</div>
+        <div class="name" id="name">â€”</div>
+        <div class="hint" id="hint">Scegli: farmaco o PokÃ©mon?</div>
 
         <div class="choices">
           <button class=" btn pixel-btn gb-drug\ id=\drugBtn\ type=\button\>?? Farmaco</button>
- <button class=\btn pixel-btn gb-poke\ id=\pokeBtn\ type=\button\>? PokÃ©mon</button>
+ <button class=\btn pixel-btn gb-poke\ id=\pokeBtn\ type=\button\>? Pokémon</button>
         </div>
 
         <div class="result" id="result" aria-live="polite"></div>
@@ -171,7 +171,7 @@
 
   <div id=" popup\ class=\popup hidden\><div class=\gb-dialog\><div id=\popupText\></div></div></div>
   <script>
-    // Dataset PokÃƒÂ©mon (Gen 1-9)
+    // Dataset PokÃ©mon (Gen 1-9)
     const POKEMON = [
       // Gen 1
       {n:"Marowak", gen:1}, {n:"Vaporeon", gen:1}, {n:"Vulpix", gen:1}, {n:"Flareon", gen:1},
@@ -248,10 +248,10 @@
 
     function buildDeck(){
       const items = [
-        ...POKEMON.map(p=>({ name:p.n, type:'pokemon', info:`PokÃƒÂ©mon (Gen ${p.gen})` })),
+        ...POKEMON.map(p=>({ name:p.n, type:'pokemon', info:`PokÃ©mon (Gen ${p.gen})` })),
         ...DRUGS.map(d=>({ name:d.n, type:'drug', info:`Farmaco` }))
       ];
-      // Shuffle (FisherÃ¢â‚¬â€œYates)
+      // Shuffle (Fisherâ€“Yates)
       for(let i=items.length-1; i>0; i--){
         const j = Math.floor(Math.random()* (i+1));
         [items[i], items[j]] = [items[j], items[i]];
@@ -266,7 +266,7 @@
       updateStatsUI();
       const cur = deck[idx];
       els.name.textContent = cur.name;
-      els.hint.textContent = 'Farmaco o PokÃƒÂ©mon?';
+      els.hint.textContent = 'Farmaco o PokÃ©mon?';
       els.result.textContent = '';
       if(!gameOver){
         inputLocked = false;
@@ -326,7 +326,7 @@
       const cur = deck[idx];
       state.wrong++;
       state.streak = 0;
-      els.result.innerHTML = `Ã¢ÂÂ±Ã¯Â¸Â Tempo scaduto! <b>${cur.name}</b> ÃƒÂ¨ ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>PokÃƒÂ©mon</b>'}. <span class="muted">${cur.info||''}</span>`;
+      els.result.innerHTML = `â±ï¸ Tempo scaduto! <b>${cur.name}</b> Ã¨ ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>PokÃ©mon</b>'}. <span class="muted">${cur.info||''}</span>`;
       updateStatsUI();
       if (state.wrong >= MAX_WRONG) {
         setTimeout(endGame, 400);
@@ -350,14 +350,14 @@
         state.correct++;
         state.streak++;
         state.best = Math.max(state.best, state.streak);
-        els.result.innerHTML = `Ã¢Å“â€¦ Esatto! <b>${cur.name}</b> ÃƒÂ¨ ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>PokÃƒÂ©mon</b>'}. <span class="muted">${cur.info||''}</span>`;
+        els.result.innerHTML = `âœ… Esatto! <b>${cur.name}</b> Ã¨ ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>PokÃ©mon</b>'}. <span class="muted">${cur.info||''}</span>`;
         flash(choice==='drug' ? drugBtn : pokeBtn, true);
         updateStatsUI();
         setTimeout(next, 1400);
       } else {
         state.wrong++;
         state.streak = 0;
-        els.result.innerHTML = `Ã¢ÂÅ’ No! <b>${cur.name}</b> ÃƒÂ¨ ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>PokÃƒÂ©mon</b>'}. <span class="muted">${cur.info||''}</span>`;
+        els.result.innerHTML = `âŒ No! <b>${cur.name}</b> Ã¨ ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>PokÃ©mon</b>'}. <span class="muted">${cur.info||''}</span>`;
         flash(choice==='drug' ? drugBtn : pokeBtn, false);
         updateStatsUI();
         if (state.wrong >= MAX_WRONG) {
@@ -377,7 +377,7 @@
       const acc = total ? Math.round((state.correct/total)*100) : 0;
       els.name.textContent = 'Fine!';
       els.hint.textContent = `Hai esaurito i ${MAX_WRONG} tentativi`;
-      els.result.innerHTML = `Ã°Å¸Â§Â  Partita terminata.<br>Corrette: <b>${state.correct}</b> Ã¢â‚¬Â¢ Sbagliate: <b>${state.wrong}</b> Ã¢â‚¬Â¢ Accuratezza: <b>${acc}%</b> Ã¢â‚¬Â¢ Streak max: <b>${state.best}</b>`;
+      els.result.innerHTML = `ðŸ§  Partita terminata.<br>Corrette: <b>${state.correct}</b> â€¢ Sbagliate: <b>${state.wrong}</b> â€¢ Accuratezza: <b>${acc}%</b> â€¢ Streak max: <b>${state.best}</b>`;
       drugBtn.disabled = true; pokeBtn.disabled = true;
       drugBtn.classList.add('hidden');
       pokeBtn.classList.add('hidden');
@@ -411,7 +411,7 @@
       // Mostra di nuovo lo stats box alla nuova partita
       (function(){ const statsEl = document.querySelector('.stats'); if (statsEl) statsEl.classList.remove('hidden'); })();
       els.result.textContent = '';
-      els.hint.textContent = 'Scegli: farmaco o PokÃƒÂ©mon?';
+      els.hint.textContent = 'Scegli: farmaco o PokÃ©mon?';
       buildDeck();
       idx = -1;
       updateStatsUI();
@@ -424,55 +424,6 @@
     pokeBtn.addEventListener('click', ()=>answer('pokemon'));
 
 
-    
-    // --- Start screen & popup ---
-    const startEl = document.getElementById('startScreen');
-    const gameEl = document.getElementById('gameScreen');
-    const startBtn = document.getElementById('startBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const popupEl = document.getElementById('popup');
-    const popupText = document.getElementById('popupText');
-
-    function showStart(){
-      clearTimer();
-      gameOver = false; inputLocked = true;
-      if(startEl) startEl.classList.remove('hidden');
-      if(gameEl) gameEl.classList.add('hidden');
-    }
-    function startFromMenu(){
-      if(startEl) startEl.classList.add('hidden');
-      if(gameEl) gameEl.classList.remove('hidden');
-      const bestKeep = state.best;
-      Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: bestKeep, round: 0 });
-      save(); updateStatsUI();
-      idx = -1; buildDeck(); gameOver = false; inputLocked = false; next();
-    }
-    function resetStats(){
-      Object.assign(state, { correct:0, wrong:0, streak:0, best:0, round:0 });
-      save(); updateStatsUI();
-    }
-
-    if(startBtn){ startBtn.addEventListener('click', startFromMenu); }
-    if(resetBtn){ resetBtn.addEventListener('click', resetStats); }
-
-    function showPopup(text, good){
-      if(!popupEl) return;
-      popupText.textContent = text;
-      popupEl.classList.remove('hidden');
-      popupEl.classList.toggle('ok', !!good);
-      popupEl.classList.toggle('bad', !good);
-      setTimeout(()=>{ if(popupEl) popupEl.classList.add('hidden'); }, 900);
-    }
-    function beep(freq=880, duration=120, type='square'){
-      try{
-        const ctx = new (window.AudioContext||window.webkitAudioContext)();
-        const o = ctx.createOscillator(); const g = ctx.createGain();
-        o.type = type; o.frequency.value = freq; o.connect(g); g.connect(ctx.destination);
-        o.start(); g.gain.setValueAtTime(0.12, ctx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration/1000);
-        setTimeout(()=>{ o.stop(); ctx.close(); }, duration+50);
-      }catch(e){}
-    }
     // Responsive: detect coarse pointer and toggle class
     (function(){
       const mq = window.matchMedia('(pointer: coarse)');
