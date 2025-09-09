@@ -351,7 +351,6 @@
         state.streak++;
         state.best = Math.max(state.best, state.streak);
         els.result.innerHTML = `Ã¢Å“â€¦ Esatto! <b>${cur.name}</b> ÃƒÂ¨ ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>PokÃƒÂ©mon</b>'}. <span class="muted">${cur.info||''}</span>`;
-        showPopup("wild Pokemon defeated!", true); beep(880,120,"square");
         flash(choice==='drug' ? drugBtn : pokeBtn, true);
         updateStatsUI();
         setTimeout(next, 1400);
@@ -360,7 +359,6 @@
         state.streak = 0;
         els.result.innerHTML = `Ã¢ÂÅ’ No! <b>${cur.name}</b> ÃƒÂ¨ ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>PokÃƒÂ©mon</b>'}. <span class="muted">${cur.info||''}</span>`;
         flash(choice==='drug' ? drugBtn : pokeBtn, false);
-        showPopup("It's super effective...", false); beep(220,160,"square");
         updateStatsUI();
         if (state.wrong >= MAX_WRONG) {
           setTimeout(endGame, 400);
