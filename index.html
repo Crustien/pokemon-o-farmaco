@@ -260,10 +260,7 @@
         const { data, error } = await supabase
           .from('scores')
           .select('*')
-          .order('correct', { ascending:false })
-          .order('acc', { ascending:false })
-          .order('best', { ascending:false })
-          .order('wrong', { ascending:true })
+          .order('score', { ascending:false })
           .order('created_at', { ascending:true })
           .limit(10);
         if(error) throw error;
@@ -273,6 +270,16 @@
           `<div style="display:flex; gap:8px; justify-content:space-between; padding:6px 0; border-bottom:1px solid #2a2e56">
             <div style="min-width:28px">#${i+1}</div>
             <div style="flex:1 1 auto; overflow-wrap:anywhere">${esc(e.name)}</div>
+            <div style="min-width:120px; text-align:right">✅ ${e.correct} / ❌ ${e.wrong}</div>
+            <div style="min-width:120px; text-align:right">${e.acc}% · max ${e.best}</div>
+          </div>`
+        ).join('');
+        // Ridefinisci markup includendo la colonna Punti (compatibilità futura)
+        box.innerHTML = data.map((e,i)=>
+          `<div style="display:flex; gap:8px; justify-content:space-between; padding:6px 0; border-bottom:1px solid #2a2e56">
+            <div style="min-width:28px">#${i+1}</div>
+            <div style="flex:1 1 auto; overflow-wrap:anywhere">${esc(e.name)}</div>
+            <div style="min-width:90px; text-align:right">⭐ ${e.score||0}</div>
             <div style="min-width:120px; text-align:right">✅ ${e.correct} / ❌ ${e.wrong}</div>
             <div style="min-width:120px; text-align:right">${e.acc}% · max ${e.best}</div>
           </div>`
@@ -305,7 +312,7 @@
         sendBtn.disabled = true;
         try{
           const { error } = await supabase.from('scores').insert({
-            name, correct: state.correct, wrong: state.wrong, best: state.best, acc: accNow, rounds: state.round
+            name, correct: state.correct, wrong: state.wrong, best: state.best, acc: accNow, rounds: state.round, score: state.score
           });
           if(error) throw error;
           label.textContent = 'Punteggio inviato!';
