@@ -99,6 +99,7 @@
     <div class="grid">
       <section class="card main">
         <div class="pill" id="roundPill">Round <b id="roundNum">1</b></div>
+        <div class="pill" id="timerPill">Tempo: <b id="timerVal">5.0s</b></div>
         <div class="name" id="name">—</div>
         <div class="hint" id="hint">Scegli: farmaco o Pokémon?</div>
 
@@ -168,15 +169,21 @@
       streak: document.getElementById('streak'),
       best: document.getElementById('best'),
       round: document.getElementById('roundNum'),
+      timerVal: document.getElementById('timerVal'),
+      timerPill: document.getElementById('timerPill'),
     };
 
     const drugBtn = document.getElementById('drugBtn');
     const pokeBtn = document.getElementById('pokeBtn');
 
     const MAX_WRONG = 5;
+    const TIME_LIMIT_MS = 5000;
     let gameOver = false;
     let replayBtn = null;
     let inputLocked = false;
+    let tStart = 0;
+    let tInterval = null;
+    let tTimeout = null;
 
     let deck = [];
     let idx = -1;
@@ -214,6 +221,7 @@
       if(!gameOver){
         inputLocked = false;
         drugBtn.disabled = false; pokeBtn.disabled = false;
+        startTimer();
       }
     }
 
@@ -235,6 +243,46 @@
       setTimeout(()=>btn.classList.remove('good','bad'), 300);
     }
 
+    function clearTimer(){
+      if(tInterval){ clearInterval(tInterval); tInterval = null; }
+      if(tTimeout){ clearTimeout(tTimeout); tTimeout = null; }
+    }
+
+    function updateTimerUI(ms){
+      if(!els.timerVal) return;
+      const sec = (ms/1000).toFixed(1);
+      els.timerVal.textContent = sec+'s';
+    }
+
+    function startTimer(){
+      clearTimer();
+      tStart = Date.now();
+      updateTimerUI(TIME_LIMIT_MS);
+      tInterval = setInterval(()=>{
+        const left = Math.max(0, TIME_LIMIT_MS - (Date.now() - tStart));
+        updateTimerUI(left);
+        if(left <= 0){ clearTimer(); timeUp(); }
+      }, 100);
+      tTimeout = setTimeout(()=>{ clearTimer(); timeUp(); }, TIME_LIMIT_MS + 20);
+    }
+
+    function timeUp(){
+      if (gameOver || inputLocked) return;
+      inputLocked = true;
+      drugBtn.disabled = true; pokeBtn.disabled = true;
+      const cur = deck[idx];
+      state.wrong++;
+      state.streak = 0;
+      els.result.innerHTML = `⏱️ Tempo scaduto! <b>${cur.name}</b> è ${cur.type==='drug' ? 'un <b>farmaco</b>' : 'un <b>Pokémon</b>'}. <span class="muted">${cur.info||''}</span>`;
+      updateStatsUI();
+      if (state.wrong >= MAX_WRONG) {
+        setTimeout(endGame, 400);
+      } else {
+        setTimeout(next, 1400);
+      }
+      save();
+    }
+
     function answer(choice){
       if (gameOver || inputLocked) return;
       const cur = deck[idx];
@@ -243,6 +291,7 @@
       // blocca input durante il feedback per evitare doppio click
       inputLocked = true;
       drugBtn.disabled = true; pokeBtn.disabled = true;
+      clearTimer();
 
       if (ok) {
         state.correct++;
@@ -270,6 +319,7 @@
     function endGame(){
       gameOver = true;
       inputLocked = true;
+      clearTimer();
       const total = state.correct + state.wrong;
       const acc = total ? Math.round((state.correct/total)*100) : 0;
       els.name.textContent = 'Fine!';
@@ -299,6 +349,7 @@
       Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: bestKeep, round: 0 });
       gameOver = false;
       inputLocked = false;
+      clearTimer();
       const choicesEl = document.querySelector('.choices');
       if(replayBtn && choicesEl && choicesEl.contains(replayBtn)) choicesEl.removeChild(replayBtn);
       drugBtn.disabled = false; pokeBtn.disabled = false;
