@@ -51,8 +51,10 @@
     .grid{ display:grid; grid-template-columns: 1fr; gap:16px; }
 
     .name{
-      text-align:center; font-weight:800; letter-spacing:.3px;
-      font-size: clamp(34px, 6vw, 64px); margin:8px 0 4px;
+      text-align:center; font-weight:800; letter-spacing:0;
+      font-size: clamp(28px, 6.5vw, 56px); margin:8px 0 4px;
+      line-height:1.05; max-width:100%;
+      overflow-wrap:anywhere; word-break:break-word;
     }
     .hint{ text-align:center; color:var(--muted); font-size:14px; min-height:20px }
 
@@ -66,8 +68,8 @@
     .btn:disabled{ opacity:.6; cursor:not-allowed; pointer-events:none; filter:saturate(.85); }
 
     .stats{ display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:12px; justify-items:stretch; color:var(--muted); margin-top:8px }
-    .stat{ background:#0b0e20; border:1px solid #2a2e56; padding:10px 12px; border-radius:10px; min-width:110px; text-align:center }
-    .stat b{ color:var(--ink) }
+    .stat{ background:#0b0e20; border:1px solid #2a2e56; padding:10px 12px; border-radius:10px; min-width:110px; text-align:center; font-size:14px; overflow-wrap:anywhere; word-break:break-word }
+    .stat b{ color:var(--ink); font-size:16px }
 
     .result{ text-align:center; margin-top:12px; min-height:26px }
 
@@ -89,7 +91,7 @@
       .choices .btn{ width:100%; font-size:1rem; padding:16px 20px }
       .title .logo{ width:36px; height:36px }
       h1{ font-size: clamp(18px, 5vw, 22px) }
-      .name{ font-size: clamp(28px, 9vw, 44px) }
+      .name{ font-size: clamp(24px, 10vw, 44px) }
       .stat{ min-width: 0 }
     }
 
