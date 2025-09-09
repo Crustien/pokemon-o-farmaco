@@ -80,6 +80,8 @@
     
 
     .pill{ display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:6px 10px; font-size:12px; background:#0b0e20; border:1px solid #2a2e56; color:var(--muted) }
+    .pill-row{ display:flex; gap:12px; flex-wrap:wrap }
+    .pill-row .pill{ flex:1 1 260px; min-width:0 }
     kbd{ background:#0b0e20; border:1px solid #2a2e56; border-bottom-width:2px; padding:2px 6px; border-radius:6px; font-family: "Pokemon Classic", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; color:var(--ink)}
 
     .muted{ color:var(--muted) }
@@ -87,7 +89,7 @@
 
     /* Timer bar */
     .timer{ display:flex; align-items:center; gap:10px }
-    .timer .bar{ width: clamp(140px, 28vw, 260px); height:8px; background:#0b0e20; border:1px solid #2a2e56; border-radius:999px; overflow:hidden }
+    .timer .bar{ width: 100%; height:8px; background:#0b0e20; border:1px solid #2a2e56; border-radius:999px; overflow:hidden }
     .timer .fill{ height:100%; width:100%; background:hsl(120 85% 55%); transition: width .1s linear, background-color .1s linear }
 
     /* Responsive tweaks */
@@ -133,9 +135,11 @@
 
     <div class="grid game hidden">
       <section class="card main">
-        <div class="pill" id="roundPill">Round <b id="roundNum">1</b></div>
-        <div class="pill timer" id="timerPill" role="progressbar" aria-label="Tempo rimasto" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
-          <div class="bar"><div class="fill" id="timerBar" style="width:100%"></div></div>
+        <div class="pill-row">
+          <div class="pill" id="roundPill">Round <b id="roundNum">1</b></div>
+          <div class="pill timer" id="timerPill" role="progressbar" aria-label="Tempo rimasto" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+            <div class="bar"><div class="fill" id="timerBar" style="width:100%"></div></div>
+          </div>
         </div>
         <div class="name" id="name">—</div>
         <div class="hint" id="hint">Scegli: farmaco o Pokémon?</div>
