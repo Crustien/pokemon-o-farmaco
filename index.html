@@ -69,6 +69,11 @@
     .muted{ color:var(--muted) }
     .hidden{ display:none !important }
 
+    /* Timer bar */
+    .timer{ gap:10px }
+    .timer .bar{ width: clamp(140px, 28vw, 260px); height:8px; background:#0b0e20; border:1px solid #2a2e56; border-radius:999px; overflow:hidden }
+    .timer .fill{ height:100%; width:100%; background:hsl(120 85% 55%); transition: width .1s linear, background-color .1s linear }
+
     /* Responsive tweaks */
     @media (max-width: 560px){
       header{ flex-direction: column; align-items: stretch; gap:10px }
@@ -99,7 +104,9 @@
     <div class="grid">
       <section class="card main">
         <div class="pill" id="roundPill">Round <b id="roundNum">1</b></div>
-        <div class="pill" id="timerPill">Tempo: <b id="timerVal">5.0s</b></div>
+        <div class="pill timer" id="timerPill" role="progressbar" aria-label="Tempo rimasto" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div class="bar"><div class="fill" id="timerBar" style="width:100%"></div></div>
+        </div>
         <div class="name" id="name">—</div>
         <div class="hint" id="hint">Scegli: farmaco o Pokémon?</div>
 
@@ -169,8 +176,8 @@
       streak: document.getElementById('streak'),
       best: document.getElementById('best'),
       round: document.getElementById('roundNum'),
-      timerVal: document.getElementById('timerVal'),
       timerPill: document.getElementById('timerPill'),
+      timerBar: document.getElementById('timerBar'),
     };
 
     const drugBtn = document.getElementById('drugBtn');
@@ -249,9 +256,12 @@
     }
 
     function updateTimerUI(ms){
-      if(!els.timerVal) return;
-      const sec = (ms/1000).toFixed(1);
-      els.timerVal.textContent = sec+'s';
+      if(!els.timerBar || !els.timerPill) return;
+      const pct = Math.max(0, Math.min(1, ms / TIME_LIMIT_MS));
+      els.timerBar.style.width = (pct*100).toFixed(1)+'%';
+      const hue = Math.round(120 * pct); // 120=verde, 0=rosso
+      els.timerBar.style.background = `hsl(${hue} 85% 55%)`;
+      els.timerPill.setAttribute('aria-valuenow', String(Math.round(pct*100)));
     }
 
     function startTimer(){
