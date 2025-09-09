@@ -87,7 +87,6 @@
 
     @media (min-width: 1100px){ .app{ width: min(1000px, 100%) } }
     /* Touch optimizations */
-    .coarse .choices .muted{ display:none }
     .coarse .btn:hover{ transform:none }
     @media (pointer: coarse){ .btn{ padding:18px 24px } }
   </style>
@@ -111,8 +110,8 @@
         <div class="hint" id="hint">Scegli: farmaco o Pokémon?</div>
 
         <div class="choices">
-          <button class="btn primary" id="drugBtn" type="button">Farmaco <span class="muted">(F)</span></button>
-          <button class="btn primary" id="pokeBtn" type="button">Pokémon <span class="muted">(P)</span></button>
+          <button class="btn primary" id="drugBtn" type="button">Farmaco</button>
+          <button class="btn primary" id="pokeBtn" type="button">Pokémon</button>
         </div>
 
         <div class="result" id="result" aria-live="polite"></div>
@@ -380,14 +379,6 @@
     drugBtn.addEventListener('click', ()=>answer('drug'));
     pokeBtn.addEventListener('click', ()=>answer('pokemon'));
 
-    window.addEventListener('keydown', (e)=>{
-      if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
-      if (gameOver || inputLocked) return;
-      const k = e.key.toLowerCase();
-      if(k==='f'){ e.preventDefault(); answer('drug'); }
-      else if(k==='p'){ e.preventDefault(); answer('pokemon'); }
-      else if(e.code==='Space'){ e.preventDefault(); /* niente skip */ }
-    });
 
     // Responsive: detect coarse pointer and toggle class
     (function(){
