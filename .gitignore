@@ -1,0 +1,9 @@
+# Ignore backup and temp folders/files
+Old/
+index.backup.html
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
