@@ -118,7 +118,18 @@
       </div>
     </header>
 
-    <div class="grid">
+    <!-- Schermata iniziale -->
+    <div class="grid" id="startScreen">
+      <section class="card main" aria-labelledby="startTitle">
+        <h2 id="startTitle" class="name" style="margin-top:0">Benvenuto nel quiz</h2>
+        <div class="hint">PokǸmon o farmaco?</div>
+        <div class="choices" style="justify-content:center">
+          <button class="btn primary" id="startBtn" type="button">Start</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid game hidden">
       <section class="card main">
         <div class="pill" id="roundPill">Round <b id="roundNum">1</b></div>
         <div class="pill timer" id="timerPill" role="progressbar" aria-label="Tempo rimasto" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
@@ -397,6 +408,19 @@
     drugBtn.addEventListener('click', ()=>answer('drug'));
     pokeBtn.addEventListener('click', ()=>answer('pokemon'));
 
+    // Start screen logic
+    const gameGrid = document.querySelector('.grid.game');
+    const startScreenEl = document.getElementById('startScreen');
+    const startBtn = document.getElementById('startBtn');
+    function startGame(){
+      if(startScreenEl) startScreenEl.classList.add('hidden');
+      if(gameGrid) gameGrid.classList.remove('hidden');
+      buildDeck();
+      updateStatsUI();
+      next();
+    }
+    if(startBtn) startBtn.addEventListener('click', startGame);
+
     // Full reset button: clears storage and reloads
     (function(){
       const resetBtn = document.getElementById('resetAllBtn');
@@ -416,10 +440,7 @@
       apply();
       if(mq.addEventListener) mq.addEventListener('change', apply); else mq.addListener(apply);
     })();
-    // Boot
-    buildDeck();
-    updateStatsUI();
-    next();
+    // Boot: mostra solo la schermata iniziale; il gioco parte con Start
   </script>
 </body>
 </html>
