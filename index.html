@@ -43,11 +43,12 @@
     .app{ width: min(900px, 100%); }
     header{ display:flex; gap:16px; align-items:center; justify-content:space-between; margin-bottom:18px; }
     .title{ display:flex; align-items:center; gap:12px;}
-    .title .logo{ width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(135deg, var(--accent), #00ffd0); box-shadow:var(--shadow); font-weight:700; color:#0a1530 }
+    .title .logo{ width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--accent), #00ffd0); box-shadow:var(--shadow); font-weight:700; color:#0a1530 }
     .title .logo img{ width:100%; height:100%; object-fit:contain; border-radius:inherit; display:block }
     h1{ font-size: clamp(18px, 2.5vw, 26px); margin:0; }
 
     .card{ background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); border:1px solid #2a2e56; border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; }
+    .card.main{ display:flex; flex-direction:column; gap:14px }
     .grid{ display:flex; flex-direction: column; gap:16px; }
 
     .name{
