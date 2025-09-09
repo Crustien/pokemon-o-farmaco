@@ -111,6 +111,9 @@
         <div class="logo"><img src="img/logo.png" alt="Logo"></div>
         <h1>Pokémon o <span class="muted">Farmaco?</span></h1>
       </div>
+      <div>
+        <button class="btn" id="resetAllBtn" type="button" title="Azzera statistiche e ricomincia">Restart</button>
+      </div>
     </header>
 
     <div class="grid">
@@ -392,6 +395,17 @@
     drugBtn.addEventListener('click', ()=>answer('drug'));
     pokeBtn.addEventListener('click', ()=>answer('pokemon'));
 
+    // Full reset button: clears storage and reloads
+    (function(){
+      const resetBtn = document.getElementById('resetAllBtn');
+      if(!resetBtn) return;
+      resetBtn.addEventListener('click', ()=>{
+        if(!confirm('Vuoi davvero resettare tutto?')) return;
+        try { localStorage.removeItem(SAVEK); } catch(e){}
+        Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: 0, round: 0 });
+        location.reload();
+      });
+    })();
 
     // Responsive: detect coarse pointer and toggle class
     (function(){
