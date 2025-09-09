@@ -82,6 +82,8 @@
     .pill{ display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:6px 10px; font-size:12px; background:#0b0e20; border:1px solid #2a2e56; color:var(--muted) }
     .pill-row{ display:flex; gap:12px; flex-wrap:wrap }
     .pill-row .pill{ flex:1 1 260px; min-width:0 }
+    .rules{ color:var(--muted); font-size:14px }
+    .rules b{ color:var(--ink) }
     kbd{ background:#0b0e20; border:1px solid #2a2e56; border-bottom-width:2px; padding:2px 6px; border-radius:6px; font-family: "Pokemon Classic", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; color:var(--ink)}
 
     .muted{ color:var(--muted) }
@@ -167,6 +169,18 @@
         </div>
       </section>
     </div>
+    <!-- Regole del gioco -->
+    <section class="card rules" aria-labelledby="rulesTitle">
+      <h3 id="rulesTitle" style="margin-top:0">Regole in breve</h3>
+      <ul style="margin:0; padding-left:18px">
+        <li>Indovina se il nome mostrato è un <b>Farmaco</b> o un <b>Pokémon</b>.</li>
+        <li>Hai <b><span id="rulesAttempts">3</span> tentativi</b> totali: al terzo errore la partita termina.</li>
+        <li>Tempo per risposta: <b><span id="rulesTimer">5</span>s</b>.</li>
+        <li>Punteggio: risposta corretta = <b>+100</b> punti.
+          Streak aumenta un <b>moltiplicatore</b> di +20% per risposta di fila (fino a <b>x3</b>),
+          un errore lo <b>azzera</b>.</li>
+      </ul>
+    </section>
   </div>
 
   <script>
@@ -525,6 +539,12 @@
     }
     if(startBtn) startBtn.addEventListener('click', startGame);
     (function(){ const r = document.getElementById('lbRefreshBtn'); if(r) r.addEventListener('click', loadLeaderboard); loadLeaderboard(); })();
+
+    // Aggiorna i valori nelle regole (tentativi e tempo) in base alle costanti
+    (function(){
+      const a = document.getElementById('rulesAttempts'); if(a) a.textContent = String(MAX_WRONG);
+      const t = document.getElementById('rulesTimer'); if(t) t.textContent = String(Math.round(TIME_LIMIT_MS/1000));
+    })();
 
     // Full reset button: clears storage and reloads
     (function(){
