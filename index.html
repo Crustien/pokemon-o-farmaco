@@ -264,18 +264,12 @@
     let idx = -1;
     const state = { correct: 0, wrong: 0, streak: 0, best: 0, round: 0, score: 0 };
 
-    // localStorage for persistence
-    const SAVEK = 'pf_stats_v1';
-    const saved = JSON.parse(localStorage.getItem(SAVEK) || 'null');
-    if(saved){ Object.assign(state, saved); }
-
-    function save(){ localStorage.setItem(SAVEK, JSON.stringify(state)); }
+    // Persistence removed: stats are session-only
 
     // Supabase client (leaderboard)
     const SUPABASE_URL = 'https://xljkbcmswvonowiethst.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsamtiY21zd3Zvbm93aWV0aHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0MjY5MDcsImV4cCI6MjA3MzAwMjkwN30.bFtmJ7PDQstKciYVba4eCyqDnxicJyrX-e-vYO9QKAQ';
     const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-    const NAMEK = 'pf_name_v1';
     function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
     async function loadLeaderboard(){
       const box = document.getElementById('leaderboard');
@@ -324,14 +318,14 @@
       label.textContent = 'Inserisci il tuo nome per la classifica:';
       const nameIn = document.createElement('input');
       nameIn.type = 'text'; nameIn.maxLength = 20; nameIn.placeholder = 'Nome';
-      nameIn.value = localStorage.getItem(NAMEK) || '';
+      nameIn.value = '';
       nameIn.className = 'btn'; nameIn.style.minWidth = '180px'; nameIn.style.margin = '6px';
       const sendBtn = document.createElement('button');
       sendBtn.className = 'btn primary'; sendBtn.textContent = 'Invia alla classifica';
       sendBtn.addEventListener('click', async ()=>{
         const name = (nameIn.value||'').trim();
         if(!name){ alert('Inserisci un nome'); nameIn.focus(); return; }
-        localStorage.setItem(NAMEK, name);
+        // storage removed: do not persist name locally
         const total = state.correct + state.wrong;
         const accNow = total ? Math.round((state.correct/total)*100) : 0;
         sendBtn.disabled = true;
@@ -369,7 +363,7 @@
     function next(){
       if(deck.length===0 || idx>=deck.length-1) buildDeck();
       idx++;
-      state.round++; save();
+      state.round++;
       updateStatsUI();
       const cur = deck[idx];
       els.name.textContent = cur.name;
@@ -441,7 +435,6 @@
       } else {
         setTimeout(next, 1400);
       }
-      save();
     }
 
     function answer(choice){
@@ -476,7 +469,6 @@
           setTimeout(next, 1400);
         }
       }
-      save();
     }
 
     function endGame(){
@@ -529,7 +521,6 @@
       buildDeck();
       idx = -1;
       updateStatsUI();
-      save();
       next();
     }
 
@@ -557,14 +548,14 @@
       const t = document.getElementById('rulesTimer'); if(t) t.textContent = String(Math.round(TIME_LIMIT_MS/1000));
     })();
 
-    // Full reset button: clears storage and reloads
+    // Full reset button: reloads
     (function(){
       const resetBtn = document.getElementById('resetAllBtn');
       if(!resetBtn) return;
       resetBtn.addEventListener('click', ()=>{
         if(!confirm('Vuoi tornare al menu?')) return;
-        try { localStorage.removeItem(SAVEK); } catch(e){}
-        Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: 0, round: 0 });
+        // storage removed: nothing to clear
+        Object.assign(state, { correct: 0, wrong: 0, streak: 0, best: 0, round: 0, score: 0 });
         location.reload();
       });
     })();
@@ -580,6 +571,3 @@
   </script>
 </body>
 </html>
-
-
-
