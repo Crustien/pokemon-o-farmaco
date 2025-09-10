@@ -395,6 +395,7 @@
       box.style.textAlign = 'center';
       const label = document.createElement('div');
       label.className = 'hint';
+      label.setAttribute('aria-live','polite');
       label.textContent = 'Inserisci il tuo nome per la classifica:';
       const nameIn = document.createElement('input');
       nameIn.type = 'text'; nameIn.maxLength = 20; nameIn.placeholder = 'Nome';
@@ -414,8 +415,10 @@
             name, correct: state.correct, wrong: state.wrong, best: state.best, acc: accNow, rounds: state.round, score: state.score
           });
           if(error) throw error;
-          label.textContent = 'Punteggio inviato!';
+          label.textContent = 'Punteggio inviato! Ritorna al menu per rigiocare.';
           nameIn.disabled = true;
+          sendBtn.disabled = true;
+          sendBtn.textContent = 'Inviato';
           await loadLeaderboard();
         }catch(err){
           sendBtn.disabled = false;
