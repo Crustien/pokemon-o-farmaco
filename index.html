@@ -136,7 +136,7 @@
       background:var(--button-bg); color:var(--ink); border:1px solid var(--line); transition: transform .05s ease; }
     .btn:hover{ transform: translateY(-1px) }
     .btn:active{ transform: translateY(0) }
-    .btn.primary{ background:linear-gradient(135deg, var(--accent), #00ffd0); color:#061225; border:none }
+    /* .btn.primary non più usato */
     .btn.good{ background: #07281f; border-color:#0e5; color:#8ff9d8 }
     .btn.bad{ background: #2b0e15; border-color:#f55; color:#ffc7c7 }
     .btn:disabled{ opacity:.6; cursor:not-allowed; pointer-events:none; filter:saturate(.85); }
@@ -188,7 +188,7 @@
       .lb-acc{ grid-column:2/4; justify-self:end; text-align:right }
     }
 
-    @media (min-width: 1100px){ .app{ width: min(var(--content-max), 100%) } }
+    /* .app è già limitata da min(); media query superflua rimossa */
     /* Touch optimizations */
     .coarse .btn:hover{ transform:none }
     @media (pointer: coarse){ .btn{ padding:18px 24px } }
@@ -366,7 +366,7 @@
             <div style="min-width:120px; text-align:right">${e.acc}% · max ${e.best}</div>
           </div>`
         ).join('');
-        // Ridefinisci markup includendo la colonna Punti (compatibilità futura)
+        // Ridefinisci markup includendo la colonna Punti
         box.innerHTML = data.map((e,i)=>
           `<div style="display:flex; gap:8px; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line)">
             <div style="min-width:28px">#${i+1}</div>
@@ -406,7 +406,6 @@
       sendBtn.addEventListener('click', async ()=>{
         const name = (nameIn.value||'').trim();
         if(!name){ alert('Inserisci un nome'); nameIn.focus(); return; }
-        // storage removed: do not persist name locally
         const total = state.correct + state.wrong;
         const accNow = total ? Math.round((state.correct/total)*100) : 0;
         sendBtn.disabled = true;
@@ -571,7 +570,7 @@
       if(!replayBtn){
         replayBtn = document.createElement('button');
         replayBtn.id = 'replayBtn';
-        replayBtn.className = 'btn primary';
+        replayBtn.className = 'btn';
         replayBtn.type = 'button';
         replayBtn.textContent = 'Rigioca';
         replayBtn.addEventListener('click', replay);
