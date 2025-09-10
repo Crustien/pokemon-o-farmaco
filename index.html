@@ -82,8 +82,8 @@
     .app{ width: min(var(--content-max), 100%); margin-inline:auto; }
     header{ display:flex; gap:16px; align-items:center; justify-content:space-between; margin-bottom:18px; }
     .title{ display:flex; align-items:center; gap:12px;}
-    .title .logo{ width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--accent), #00ffd0); box-shadow:var(--shadow); font-weight:700; color:#0a1530 }
-    .title .logo img{ width:100%; height:100%; object-fit:contain; border-radius:inherit; display:block }
+    .title .logo{ width:42px; height:42px; border-radius:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--accent), #00ffd0); box-shadow:var(--shadow); font-weight:700; color:#0a1530 }
+    .title .logo img{ width:100%; height:100%; object-fit:contain; border-radius:0; display:block }
     h1{ font-size: clamp(18px, 2.5vw, 26px); margin:0; }
 
     .card{ position:relative; background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); box-shadow:var(--shadow); padding:clamp(16px, 3vw, 24px); border:none; border-radius:0; }
@@ -214,7 +214,7 @@
         <h2 id="startTitle" class="name" style="margin-top:0">Benvenuto!</h2>
         <div class="hint">Pokémon o farmaco?</div>
         <div class="choices">
-          <button class="btn primary" id="startBtn" type="button">Start</button>
+          <button class="btn" id="startBtn" type="button">Start</button>
         </div>
       </section>
       <section class="card" aria-labelledby="lbTitle">
@@ -238,8 +238,8 @@
         <div class="hint" id="hint">Scegli: farmaco o Pokémon?</div>
 
         <div class="choices">
-          <button class="btn primary" id="drugBtn" type="button">Farmaco</button>
-          <button class="btn primary" id="pokeBtn" type="button">Pokémon</button>
+          <button class="btn" id="drugBtn" type="button">Farmaco</button>
+          <button class="btn" id="pokeBtn" type="button">Pokémon</button>
         </div>
 
         <div class="result" id="result" aria-live="polite"></div>
@@ -401,7 +401,7 @@
       nameIn.value = '';
       nameIn.className = 'btn'; nameIn.style.minWidth = '180px'; nameIn.style.margin = '6px';
       const sendBtn = document.createElement('button');
-      sendBtn.className = 'btn primary'; sendBtn.textContent = 'Invia alla classifica';
+      sendBtn.className = 'btn'; sendBtn.textContent = 'Invia alla classifica';
       sendBtn.addEventListener('click', async ()=>{
         const name = (nameIn.value||'').trim();
         if(!name){ alert('Inserisci un nome'); nameIn.focus(); return; }
@@ -560,7 +560,7 @@
       els.name.textContent = 'Fine!';
       els.hint.textContent = `Hai esaurito i ${MAX_WRONG} tentativi`;
       els.result.innerHTML = `🧠 Partita terminata.<br>Corrette: <b>${state.correct}</b> • Sbagliate: <b>${state.wrong}</b> • Accuratezza: <b>${acc}%</b> • Streak max: <b>${state.best}</b>`;
-      els.result.innerHTML += ` �?� Punti: <b>${state.score}</b>`;
+      els.result.innerHTML += ` &middot; Punti: <b>${state.score}</b>`;
       drugBtn.disabled = true; pokeBtn.disabled = true;
       drugBtn.classList.add('hidden');
       pokeBtn.classList.add('hidden');
