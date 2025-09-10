@@ -1,0 +1,67 @@
+﻿<div class="app">
+  <header>
+    <div class="title">
+      <div class="logo"><img src="assets/logo.png" alt="Logo"></div>
+      <h1>Pokémon o <span class="muted">Farmaco?</span></h1>
+    </div>
+    <div>
+      <button class="btn" id="resetAllBtn" type="button" title="Azzera statistiche e ricomincia">Menu</button>
+      <button class="btn" id="themeBtn" type="button" title="Cambia tema">Tema</button>
+    </div>
+  </header>
+
+  <div class="grid" id="startScreen">
+    <section class="card main" aria-labelledby="startTitle">
+      <h2 id="startTitle" class="name" style="margin-top:0">Benvenuto!</h2>
+      <div class="hint">Pokémon o farmaco?</div>
+      <div class="choices">
+        <button class="btn" id="startBtn" type="button">Start</button>
+      </div>
+    </section>
+    <section class="card" aria-labelledby="lbTitle">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px">
+        <h3 id="lbTitle" style="margin:0">Classifica</h3>
+        <button class="btn" id="lbRefreshBtn" type="button" title="Ricarica classifica">Aggiorna</button>
+      </div>
+      <div id="leaderboard" class="leaderboard muted">Caricamento…</div>
+    </section>
+  </div>
+
+  <div class="grid game hidden">
+    <section class="card main">
+      <div class="pill-row">
+        <div class="pill" id="roundPill">Round <b id="roundNum">1</b></div>
+        <div class="pill timer" id="timerPill" role="progressbar" aria-label="Tempo rimasto" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div class="bar"><div class="fill" id="timerBar" style="width:100%"></div></div>
+        </div>
+      </div>
+      <div class="name" id="name">—</div>
+      <div class="hint" id="hint">Scegli: farmaco o Pokémon?</div>
+
+      <div class="choices">
+        <button class="btn" id="drugBtn" type="button">Farmaco</button>
+        <button class="btn" id="pokeBtn" type="button">Pokémon</button>
+      </div>
+
+      <div class="result" id="result" aria-live="polite"></div>
+
+      <div class="stats">
+        <div class="stat">Punti: <b id="score">0</b></div>
+        <div class="stat">Corrette: <b id="correct">0</b></div>
+        <div class="stat">Sbagliate: <b id="wrong">0</b></div>
+        <div class="stat">Accuratezza: <b id="acc">0%</b></div>
+        <div class="stat">Streak: <b id="streak">0</b> (max <b id="best">0</b>)</div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card rules" aria-labelledby="rulesTitle">
+    <h3 id="rulesTitle" style="margin-top:0">Regole in breve</h3>
+    <ul style="margin:0; padding-left:18px">
+      <li>Indovina se il nome mostrato è un <b>Farmaco</b> o un <b>Pokémon</b>.</li>
+      <li>Hai <b><span id="rulesAttempts">3</span> tentativi</b> totali: al terzo errore la partita termina.</li>
+      <li>Tempo per risposta: <b><span id="rulesTimer">5</span>s</b>.</li>
+      <li>Punteggio: risposta corretta = <b>+100</b> punti. Streak aumenta un <b>moltiplicatore</b> di +20% per risposta di fila (fino a <b>x3</b>), un errore lo <b>azzera</b>.</li>
+    </ul>
+  </section>
+</div>

@@ -1,0 +1,189 @@
+
+    @font-face{
+      font-family: —Pokemon Classic—;
+      src: url('assets/font/Pokemon Classic.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    :root{
+      /* Theme variables (default: dark) */
+      --bg: #0f1226;
+      --card:#171a35;
+      --ink:#e9ecff;
+      --muted:#9aa3d9;
+      --accent:#6f8cff;
+      --accent-2:#2ee6a6;
+      --line:#2a2e56;
+      --line-2:#0b0f2a;
+      --subsurface:#0b0e20;
+      --button-bg:#11142b;
+      --bad:#ff6b6b;
+      --good:#25d29f;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --content-max: 760px; /* larghezza massima contenuto */
+      --pxb: 2px; /* spessore pixel per bordi a 8-bit */
+    }
+    /* Light/Dark theme toggles */
+    body.theme-light{
+      --bg:#ffffff;
+      --card:#ffffff;
+      --ink:#0b0b0b;
+      --muted:#555;
+      --line:#000000;
+      --line-2:#333333;
+      --subsurface:#f0f2f7;
+      --button-bg:#f5f7fa;
+      /* Sfondo semplice in chiaro */
+      background: var(--bg) !important;
+      color: var(--ink);
+    }
+    body.theme-dark{
+      --bg:#000000;
+      --card:#000000;
+      --ink:#ffffff;
+      --muted:#bbbbbb;
+      --line:#ffffff;
+      --line-2:#d0d0d0;
+      --subsurface:#111111;
+      --button-bg:#0f0f0f;
+      background: var(--bg) !important;
+      color: var(--ink);
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      font: 16px/1.4 —Pokemon Classic—, system-ui, -apple-system, Segoe UI, Roboto, Inter, —Helvetica Neue—, Arial;
+      color:var(--ink);
+      display:flex; align-items:center; justify-content:center;
+      /* Evita tagli orizzontali su schermi piccoli */
+      overflow-x:hidden;
+      /* Assicura altezza piena anche con UI mobile */
+      min-height: 100vh;
+      min-height: 100svh;
+      /* padding responsivo + safe areas (iOS notch) */
+      --pad: clamp(12px, 2.5vw, 28px);
+      padding: var(--pad);
+      padding-left: calc(var(--pad) + env(safe-area-inset-left));
+      padding-right: calc(var(--pad) + env(safe-area-inset-right));
+      padding-top: calc(var(--pad) + env(safe-area-inset-top));
+      padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom));
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    .app{ width: min(var(--content-max), 100%); margin-inline:auto; }
+    header{ display:flex; gap:16px; align-items:center; justify-content:space-between; margin-bottom:18px; }
+    .title{ display:flex; align-items:center; gap:12px;}
+    .title .logo{ width:42px; height:42px; border-radius:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--accent), #00ffd0); box-shadow:var(--shadow); font-weight:700; color:#0a1530 }
+    .title .logo img{ width:100%; height:100%; object-fit:contain; border-radius:0; display:block }
+    h1{ font-size: clamp(18px, 2.5vw, 26px); margin:0; }
+
+    .card{ position:relative; background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); box-shadow:var(--shadow); padding:clamp(16px, 3vw, 24px); border:none; border-radius:0; }
+    /* Bordi pixelati (stile 8-bit) */
+    .card::before{
+      content:——; position:absolute; inset:0; pointer-events:none;
+      /* doppio bordo interno, spigoloso */
+      box-shadow: inset 0 0 0 var(--pxb) var(--line), inset 0 0 0 calc(2*var(--pxb)) var(--line-2);
+    }
+    .card::after{
+      content:——; position:absolute; inset:0; pointer-events:none;
+      /* angoli a —L— per un look piÃ¹ pixel */
+      background:
+        linear-gradient(var(--line),var(--line)) top left/var(--pxb) calc(4*var(--pxb)),
+        linear-gradient(var(--line),var(--line)) top left/calc(4*var(--pxb)) var(--pxb),
+        linear-gradient(var(--line),var(--line)) top right/var(--pxb) calc(4*var(--pxb)),
+        linear-gradient(var(--line),var(--line)) top right/calc(4*var(--pxb)) var(--pxb),
+        linear-gradient(var(--line),var(--line)) bottom left/var(--pxb) calc(4*var(--pxb)),
+        linear-gradient(var(--line),var(--line)) bottom left/calc(4*var(--pxb)) var(--pxb),
+        linear-gradient(var(--line),var(--line)) bottom right/var(--pxb) calc(4*var(--pxb)),
+        linear-gradient(var(--line),var(--line)) bottom right/calc(4*var(--pxb)) var(--pxb);
+      background-repeat:no-repeat;
+    }
+    .card.main{ display:flex; flex-direction:column; gap:14px }
+    .grid{ display:flex; flex-direction: column; gap:16px; }
+
+    .name{
+      text-align:center; font-weight:800; letter-spacing:0;
+      font-size: clamp(28px, 6.5vw, 56px); margin:8px 0 4px;
+      line-height:1.15; max-width:100%;
+      overflow-wrap:anywhere; word-break:break-word;
+    }
+    /* Mantieni —Benvenuto!— su una sola riga su mobile */
+    #startTitle{
+      white-space: nowrap;           /* non andare a capo */
+      text-wrap: nowrap;             /* supporto moderno */
+      overflow-wrap: normal;         /* non spezzare parole */
+      word-break: keep-all;          /* evita break arbitrari */
+      font-size: clamp(24px, 9.5vw, 56px); /* scala per stare in una riga */
+      width: 90%;                    /* occupa il 90% dello spazio */
+      margin-left: auto;             /* centrato orizzontalmente */
+      margin-right: auto;
+    }
+    .hint{ text-align:center; color:var(--muted); font-size:14px; min-height:20px }
+
+    .choices{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap }
+    .btn{ cursor:pointer; border:none; border-radius:14px; padding:16px 22px; 
+      font-family: —Pokemon Classic—, system-ui, -apple-system, Segoe UI, Roboto, Inter, —Helvetica Neue—, Arial;
+      font-weight:400; letter-spacing:0; 
+      background:var(--button-bg); color:var(--ink); border:1px solid var(--line); transition: transform .05s ease; }
+    .btn:hover{ transform: translateY(-1px) }
+    .btn:active{ transform: translateY(0) }
+    /* .btn.primary non piÃ¹ usato */
+    .btn.good{ background: #07281f; border-color:#0e5; color:#8ff9d8 }
+    .btn.bad{ background: #2b0e15; border-color:#f55; color:#ffc7c7 }
+    .btn:disabled{ opacity:.6; cursor:not-allowed; pointer-events:none; filter:saturate(.85); }
+
+    .stats{ display:flex; flex-wrap:wrap; gap:12px; align-items:stretch; color:var(--muted); margin-top:8px }
+    .stat{ background:var(--subsurface); border:1px solid var(--line); padding:10px 12px; border-radius:10px; min-width:110px; text-align:center; font-size:14px; overflow-wrap:anywhere; word-break:break-word; flex: 1 1 120px }
+    .stat b{ color:var(--ink); font-size:16px }
+
+    .result{ text-align:center; min-height:26px }
+    /* Nasconde l'info ripetitiva (es. —Farmaco— o —PokÃ©mon—) nei messaggi risultato */
+    
+
+    .pill{ display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:6px 10px; font-size:12px; background:var(--subsurface); border:1px solid var(--line); color:var(--muted) }
+    .pill-row{ display:flex; gap:12px; flex-wrap:wrap }
+    .pill-row .pill{ flex:1 1 260px; min-width:0 }
+    .rules{ color:var(--muted); font-size:14px }
+    .rules b{ color:var(--ink) }
+    kbd{ background:var(--subsurface); border:1px solid var(--line); border-bottom-width:2px; padding:2px 6px; border-radius:6px; font-family: —Pokemon Classic—, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, —Liberation Mono—, —Courier New—, monospace; font-size:12px; color:var(--ink)}
+
+    .muted{ color:var(--muted) }
+    .hidden{ display:none !important }
+
+    /* Timer bar */
+    .timer{ display:flex; align-items:center; gap:10px }
+    .timer .bar{ width: 100%; height:8px; background:var(--subsurface); border:1px solid var(--line); border-radius:999px; overflow:hidden }
+    .timer .fill{ height:100%; width:100%; background:hsl(120 85% 55%); transition: width .1s linear, background-color .1s linear }
+
+    /* Leaderboard layout */
+    .leaderboard{ overflow-x:auto; -webkit-overflow-scrolling: touch; font-variant-numeric: tabular-nums; }
+    .lb-row{ display:flex; flex-direction:column; gap:4px; padding:6px 0; border-bottom:1px solid var(--line) }
+    .lb-top{ display:flex; align-items:baseline; gap:8px }
+    .lb-rank{ min-width:28px; color:var(--muted) }
+    .lb-name{ flex:1 1 auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+    .lb-bottom{ display:flex; align-items:center; justify-content:flex-end; gap:12px; font-size:13px; opacity:.95 }
+
+    /* Responsive tweaks */
+    @media (max-width: 560px){
+      header{ flex-direction: column; align-items: stretch; gap:10px }
+      .choices{ flex-direction: column }
+      .choices .btn{ width:100%; font-size:1rem; padding:16px 20px }
+      .title .logo{ width:36px; height:36px }
+      h1{ font-size: clamp(18px, 5vw, 22px) }
+      .name{ font-size: clamp(24px, 10vw, 44px) }
+      .stat{ min-width: 0 }
+      /* Leaderboard mobile: riga 1 (rank+nome), riga 2 (punteggi su due righe, compressi a destra) */
+      .lb-bottom{ display:grid; grid-template-columns: 1fr auto auto; gap:6px 12px; font-size: clamp(11px, 3.6vw, 13px); }
+      .lb-score{ grid-column:2/3; justify-self:end; text-align:right }
+      .lb-rw{ grid-column:3/4; justify-self:end; text-align:right }
+      .lb-acc{ grid-column:2/4; justify-self:end; text-align:right }
+    }
+
+    /* .app Ã¨ giÃ  limitata da min(); media query superflua rimossa */
+    /* Touch optimizations */
+    .coarse .btn:hover{ transform:none }
+    @media (pointer: coarse){ .btn{ padding:18px 24px } }
+  
